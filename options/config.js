@@ -30,7 +30,7 @@ global.APIKeys = {
 }
 
 //━━━━━━━━━━━━━━━[ SETTING ]━━━━━━━━━━━━━━━━━//
-global.thumb = fs.readFileSync('../image/thumbnail.jpg') // JGN DI UBAH!
+global.thumb = fs.readFileSync('./image/thumbnail.jpg') // JGN DI UBAH!
 global.name = 'Aulia Rahman (Owner)', // GNTI NAMA LU!
 global.creator = 'LiaaCans BOT' // GANTI NAMA BOT LU BANH!
 global.owner = ['6285821676621'] // GNTI NOMOR LU!
