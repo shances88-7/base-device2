@@ -4,6 +4,14 @@ RECODE : RAHMXBOT X RAHMAN GNTENG:V
 WHATSAPP : 085821676621
 NOMOR BOT : 085821369324
 NOTE : JGN HPS AUTHORNYA!!!
+
+DONASI LAH BANG BIAR 
+ADMINNYA UPDATE LAGI
+
+Kalau Mau Donasi Silahkan Pilih Yah
+Payment : Ovo/Gopay/Dana
+Number Payment : Chat Owner Wa nya Di Atas
+Pulsa : 081528965381
 */
 
 const fs = require('fs')
@@ -22,7 +30,7 @@ global.APIKeys = {
 }
 
 //━━━━━━━━━━━━━━━[ SETTING ]━━━━━━━━━━━━━━━━━//
-global.thumb = fs.readFileSync('./image/thumbnail.jpg') // JGN DI UBAH!
+global.thumb = fs.readFileSync('../image/thumbnail.jpg') // JGN DI UBAH!
 global.name = 'Aulia Rahman (Owner)', // GNTI NAMA LU!
 global.creator = 'LiaaCans BOT' // GANTI NAMA BOT LU BANH!
 global.owner = ['6285821676621'] // GNTI NOMOR LU!
@@ -32,6 +40,7 @@ global.pulsa = ['081528965381'] // UBAH NOMOR YG AKTIF!
 global.botname = 'LiaaCans BOT' // GNTI NAMA BOT LU!
 global.packname = 'Nih Stikel Umtukmu' // TRSERAH MO GANTI AP!
 global.author = 'LiaaCans BOT' // GNTI NMA LU!
+global.fake = 'LiaaCans Botz Verified'
 global.prefa = ['','!','.','/','#','$']
 global.sp = '⭔' // JGN DI UBAH²! NTR EROR
 global.mess = {
