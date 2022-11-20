@@ -1,19 +1,3 @@
-/* 
-NOTE : JGN HPS DIBAWAH INI!!
-AUTHOR : RAHMXBOT X RAHMAN GNTENG:V
-WHATSAPP OWN : 085821676621
-NOMOR BOT : 085821369324
-NOTE : JGN HPS AUTHORNYA!!!
-
-DONASI LAH BANG BIAR 
-ADMINNYA UPDATE LAGI
-
-Kalau Mau Donasi Silahkan Pilih Yah
-Payment : Ovo/Gopay/Dana
-Number Payment : Chat Owner Wa nya Di Atas
-Pulsa : 081528965381
-*/
-
 require('../options/config')
 var { BufferJSON, WA_DEFAULT_EPHEMERAL, generateWAMessageFromContent, proto, generateWAMessageContent, generateWAMessage, prepareWAMessageMedia, areJidsSameUser, getContentType } = require('@adiwajshing/baileys')
 var fs = require('fs')
@@ -26,11 +10,591 @@ var os = require('os')
 var moment = require('moment-timezone')
 var { JSDOM } = require('jsdom')
 var speed = require('performance-now')
+var FormData = require("form-data")
 var { performance } = require('perf_hooks')
-var { smsg, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, format, parseMention, getRandom } = require('../message/myfunc')
+var { smsg, formatp, tanggal, formatDate, getTime, isUrl, sleep, clockString, runtime, fetchJson, getBuffer, jsonformat, format, parseMention, getRandom, makeid } = require('../message/myfunc')
 var { pinterest, wallpaper, wikimedia, quotesAnime } = require('../message/scraper')
+var { jadibot, listJadibot } = require('../message/jadibot')
+/*var premium = require("../message/premium")*/ //Fix aja kalau bisa
+var { convertSaldo } = require("../message/dana")
+var { csrfGenerator, listProduct, isProductValid, getDetailProduct, getQrCode, convertGopay } = require("../message/gopay")
+var { addResponList, delResponList, isAlreadyResponList, isAlreadyResponListGroup, sendResponList, updateResponList, getDataResponList } = require('../message/respon-list')
+var { addRespons, checkRespons, deleteRespons } = require('../message/respon')
+
+// HOST WHM
+let hostwhm = '' //Host server whm
+let usrwhm = '' //username whm
+let passwhm = '' //Password whm
+let tokenwhm = '' // caranya => https://www.eukhost.com/kb/how-to-generate-an-api-token-using-whm/
+let ipsrv = '' //ip server whm
+
+// Biarin Jgn Di ubah
+let authWhm = {headers: {Authorization: `WHM ${usrwhm}:${tokenwhm}`}}
 
 
+// List Dm Ff
+let list = {
+  "ff": {
+    "FF5": {
+    "nama": "5 Diamond",
+    "hargaid": 900,
+    "harga":"Rp900",
+    },
+        "FF10": {
+    "nama": "10 Diamond",
+    "hargaid": 1800,
+    "harga":"Rp1.800",
+    },
+        "FF15": {
+    "nama": "15 Diamond",
+    "hargaid": 2700,
+    "harga":"Rp2.700",
+    },
+        "FF20": {
+    "nama": "20 Diamond",
+    "hargaid": 3000,
+    "harga":"Rp3.000",
+    },
+        "FF25": {
+    "nama": "25 Diamond",
+    "hargaid": 3900,
+    "harga":"Rp3.900",
+    },
+        "FF30": {
+    "nama": "30 Diamond",
+    "hargaid": 4800,
+    "harga":"Rp4.800",
+    },
+        "FF40": {
+    "nama": "40 Diamond",
+    "hargaid": 6000,
+    "harga":"Rp6.000",
+    },
+        "FF50": {
+    "nama": "50 Diamond",
+    "hargaid": 7200,
+    "harga":"Rp7.200",
+    },
+        "FF55": {
+    "nama": "55 Diamond",
+    "hargaid": 8100,
+    "harga":"Rp8.100",
+    },
+        "FF60": {
+    "nama": "60 Diamond",
+    "hargaid": 9000,
+    "harga":"Rp9.000",
+    },
+        "FF70": {
+    "nama": "70 Diamond",
+    "hargaid": 9900,
+    "harga":"Rp9.900",
+    },
+        "FF75": {
+    "nama": "75 Diamond",
+    "hargaid": 10800,
+    "harga":"Rp10.800",
+    },
+"FF80": {
+"nama": "80 Diamond",	
+"hargaid":11700,
+"harga":"Rp11.700",
+},
+"FF90": {
+"nama": "90 Diamond",	
+"hargaid":12900,
+"harga":"Rp12.900",
+},
+"FF95": {
+"nama": "95 Diamond",	
+"hargaid":13800,
+"harga":"Rp13.800",	
+},
+"FF100": {
+"nama": "100 Diamond",	
+"hargaid": 14400,
+"harga":"Rp14.400",
+},
+"FF120": {
+"nama": "120 Diamond",	
+"hargaid":17100,
+"harga":"Rp17.100",
+},
+"FF130": {
+"nama": "130 Diamond",	
+"hargaid":18900,
+"harga":"Rp18.900",
+},
+"FF140": {
+"nama": "140 Diamond",	
+"hargaid":19800,
+"harga":"Rp19.800",	
+},
+"FF145": {
+"nama": "145 Diamond",	
+"hargaid":20700,
+"harga":"Rp20.700",
+},
+"FF150": {
+"nama": "150 Diamond",	
+"hargaid":21600,
+"harga":"Rp21.600",
+},
+"FF160": {
+"nama": "160 Diamond",	
+"hargaid":22800,
+"harga":"Rp22.800",
+},
+"FF180": {
+"nama": "180 Diamond",	
+"hargaid":25800,
+"harga":"Rp25.800",
+},
+"FF190": {
+"nama": "190 Diamond",	
+"hargaid":27000,
+"harga":"Rp27.000",
+},
+"FF200": {
+"nama": "200 Diamond",	
+"hargaid":28800,
+"harga":"Rp28.800",
+},
+"FF210": {
+"nama": "210 Diamond",	
+"hargaid":29700,
+"harga":"Rp29.700",
+},
+"FFM": {
+"nama": "Member Mingguan",
+"hargaid":30000,
+"harga":"Rp30.000",
+},
+"FF250": {
+"nama": "250 Diamond",	
+"hargaid":35700,
+"harga":"Rp35.700",
+},
+"FF280": {
+"nama": "280 Diamond",	
+"hargaid":39600,
+"harga":"Rp39.600",
+},
+"FF300": {
+"nama": "300 Diamond",	
+"hargaid":42600,
+"harga":"Rp42.600",
+},
+"FF355": {
+"nama": "355 Diamond",	
+"hargaid":49900,
+"harga":"Rp49.900",
+},
+"FF350": {
+"nama": "350 Diamond",	
+"hargaid":49500,
+"harga":"Rp49.500",
+},
+"FF375": {
+"nama": "375 Diamond",	
+"hargaid":52500,
+"harga":"Rp52.500",
+},
+"FF400": {
+"nama": "400 Diamond",	
+"hargaid":56400,
+"harga":"Rp56.400",
+},
+"FF405": {
+"nama": "405 Diamond",	
+"hargaid":56700,
+"harga":"Rp56.700",
+},
+"FF425": {
+"nama": "425 Diamond",	
+"hargaid":59400,
+"harga":"Rp59.400",
+},
+"FF475": {
+"nama": "475 Diamond",	
+"hargaid":66600,
+"harga":"Rp66.600",
+},
+"FF500": {
+"nama": "500 Diamond",	
+"hargaid":70200,
+"harga":"Rp70.200",
+},
+"FF510": {
+"nama": "510 Diamond",	
+"hargaid": 72000,
+"harga":"Rp72.000",
+},
+"FF515": {
+"nama": "515 Diamond",	
+"hargaid": 72300,
+"harga":"Rp72.300",
+},
+
+"FF512": {
+"nama": "512+3 Diamond",	
+"hargaid":72300,
+"harga":"Rp72.300",
+},
+"FF545": {
+"nama": "545 Diamond",	
+"hargaid":76500,
+"harga":"Rp76.500",
+},
+"FF565": {
+"nama": "565 Diamond",	
+"hargaid":79200,
+"harga":"Rp79.200",	
+},
+"FF600": {
+"nama": "600 Diamond",	
+"hargaid":84600,
+"harga":"Rp84.600",
+},
+"FF635": {
+"nama": "635 Diamond",	
+"hargaid": 89100,
+"harga":"Rp89.100",
+},
+"FF645": {
+"nama": "645 Diamond",	
+"hargaid":90900,
+"harga":"Rp90.900",
+},
+"FF655": {
+"nama": "655 Diamond",	
+"hargaid":92100,
+"harga":"Rp92.100",
+},
+"FF720": {
+"nama": "720 Diamond",	
+"hargaid": 99000,
+"harga":"Rp99.000",
+},
+"FF700": {
+"nama": "700 Diamond",	
+"hargaid":99000,
+"harga":"Rp99.000",
+},
+"FF770": {
+"nama": "770 Diamond",	
+"hargaid":106200,
+"harga":"Rp106.200",	
+},
+"FF790": {
+"nama": "790 Diamond",	
+"hargaid": 108900,
+"harga":"Rp108.900",
+},
+"FF800": {
+"nama": "800 Diamond",	
+"hargaid": 110700,
+"harga":"Rp110.700",
+},
+"FF860": {
+"nama": "860 Diamond",	
+"hargaid": 118800,
+"harga":"Rp118.800",
+},
+"FF930": {
+"nama": "930 Diamond",	
+"hargaid":128700,
+"harga":"Rp128.700",
+},
+"FF1000": {
+"nama": "1000 Diamond",	
+"hargaid":138600,
+"harga":"Rp138.600",	
+},
+"FF1050": {
+"nama": "1050 Diamond",	
+"hargaid":145800,
+"harga":"Rp145.800",
+},
+"FF1075": {
+"nama": "1075 Diamond",	
+"hargaid":148500,
+"harga":"Rp148.500",
+},
+"FF1080": {
+"nama": "1080 Diamond",	
+"hargaid":149400,
+"harga":"Rp149.400",
+},
+"FFB": {
+"nama": "Member Bulanan",
+"hargaid":150000,
+"harga":"Rp150.000",
+},
+"FF1200": {
+"nama": "1200 Diamond",	
+"hargaid":166800,
+"harga":"Rp166.800",
+},
+"FF1215": {
+"nama": "1215 Diamond",	
+"hargaid":16830,
+"harga":"Rp168.300",
+},
+"FF1300": {
+"nama": "1300 Diamond",	
+"hargaid":180900,
+"harga":"Rp180.900",
+},
+"FF1440": {
+"nama": "1440 Diamond",	
+"hargaid":198000,
+"harga":"Rp198.000",
+},
+"FF1450": {
+"nama": "1450 Diamond",	
+"hargaid":199800,
+"harga":"Rp199.800",
+},
+"FF1490": {
+"nama": "1490 Diamond",	
+"hargaid":205200,
+"harga":"Rp205.200",
+},
+"FF1510": {
+"nama": "1510 Diamond",	
+"hargaid":207900,
+"harga":"Rp207.900",
+},
+"FF1580": {
+"nama": "1580 Diamond",	
+"hargaid":217800,
+"harga":"Rp217.800",
+},
+"FF1795": {
+"nama": "1795 Diamond",	
+"hargaid":247500,
+"harga":"Rp247.500",
+},
+"FF1800": {
+"nama": "1800, Diamond",	
+"hargaid": 248400,
+"harga":"Rp248.400",
+},
+"FF2000": {
+"nama": "2000 Diamond",	
+"hargaid":270000,
+"harga":"Rp270.000",
+},
+"FF2140": {
+"nama": "2140 Diamond",	
+"hargaid": 289800,
+"harga":"Rp289.800",
+},
+"FF2190": {
+"nama": "2190 Diamond",	
+"hargaid": 297000,
+"harga":"Rp297.000",
+},
+"FF2210": {
+"nama": "2210 Diamond",	
+"hargaid": 299700,
+"harga":"Rp299.700",
+},
+"FF2280": {
+"nama": "2280 Diamond",	
+"hargaid": 309600,
+"harga":"Rp309.600",
+},
+"FF2355": {
+"nama": "2355 Diamond",	
+"hargaid": 319500,
+"harga":"Rp319.500",
+},
+"FF2720": {
+"nama": "2720 Diamond",	
+"hargaid": 369000,
+"harga":"Rp369.000",
+},
+"FF4000": {
+"nama": "4000 Diamond",	
+"hargaid": 540000,
+"harga":"Rp540.000",
+},
+"FF77290": {
+"nama": "7290 Diamond",	
+"hargaid": 990000,
+"harga":"Rp990.000",
+},
+},
+};
+
+// List Dm Ml
+let listml = {
+  "ml": {
+    "UPMBL5": {
+    "nama": "5 Diamond",
+    "hargaid": 1700,
+    "harga":"Rp1.700",
+    },
+        "UPMBL12": {
+    "nama": "12 Diamond",
+    "hargaid": 4000,
+    "harga":"Rp4.000",
+    },
+    "ZIDMBL17": {
+    "nama": "17 Diamond",
+    "hargaid": 4500,
+    "harga":"Rp4.500",
+    },
+        "UPMBL19": {
+    "nama": "19 Diamond",
+    "hargaid": 7000,
+    "harga":"Rp7.000",
+    },
+        "UPMBL28": {
+    "nama": "28 Diamond",
+    "hargaid": 10500,
+    "harga":"Rp10.500",
+    },
+        "UPMBL36": {
+    "nama": "36 Diamond",
+    "hargaid": 13000,
+    "harga":"Rp13.000",
+    },
+        "UPMBL44": {
+    "nama": "44 Diamond",
+    "hargaid": 15000,
+    "harga":"Rp15.000",
+    },
+        "UPMBL59": {
+    "nama": "59 Diamond",
+    "hargaid": 18500,
+    "harga":"Rp18.500",
+    },
+        "UPMBL74": {
+    "nama": "74 Diamond",
+    "hargaid": 22500,
+    "harga":"Rp22.500",
+    },
+        "UPMBL85": {
+    "nama": "85 Diamond",
+    "hargaid": 26500,
+    "harga":"Rp26.500",
+    },
+        "UPMBL170": {
+    "nama": "170 Diamond",
+    "hargaid": 51500,
+    "harga":"Rp51.500",
+    },
+        "UPMBL185": {
+    "nama": "185 Diamond",
+    "hargaid": 56500,
+    "harga":"Rp56.500",
+    },
+        "UPMBL222": {
+    "nama": "222 Diamond",
+    "hargaid": 67500,
+    "harga":"Rp67.500",
+    },
+        "UPMBL240": {
+    "nama": "240 Diamond",
+    "hargaid": 72500,
+    "harga":"Rp72.500",
+    },
+        "UPMBL296": {
+    "nama": "296 Diamond",
+    "hargaid": 89500,
+    "harga":"Rp89.500",
+    },
+        "UPMBL370": {
+    "nama": "370 Diamond",
+    "hargaid": 111500,
+    "harga":"Rp111.500",
+    },
+        "UPMBL408": {
+    "nama": "408 Diamond",
+    "hargaid": 123500,
+    "harga":"Rp123.500",
+    },
+        "UPMBL568": {
+    "nama": "568 Diamond",
+    "hargaid": 167500,
+    "harga":"Rp167.500",
+    },
+        "UPMBL875": {
+    "nama": "875 Diamond",
+    "hargaid": 256500,
+    "harga":"Rp256.500",
+    },
+        "UPMBL1159": {
+    "nama": "1159 Diamond",
+    "hargaid": 333500,
+    "harga":"Rp333.500",
+    },
+        "UPMBL2010": {
+    "nama": "2010 Diamond",
+    "hargaid": 555.500,
+    "harga":"Rp555.500",
+    },
+        "UPMBL4830": {
+    "nama": "4830 Diamond",
+    "hargaid": 1322500,
+    "harga":"Rp1322.500",
+    },
+ },
+};
+
+// List Dm Mlbb
+let listmlbb = {
+  "ml": {
+    "ZIDMBL17": {
+    "nama": "17 Diamond",
+    "hargaid": 4500,
+    "harga":"Rp4.500",
+    },
+        "ZIDMBL34": {
+    "nama": "34 Diamond",
+    "hargaid": 9000,
+    "harga":"Rp9.000",
+    },
+    "ZIDMBL50": {
+    "nama": "50 Diamond",
+    "hargaid": 13500,
+    "harga":"Rp13.500",
+    },
+        "ZIDMBL66": {
+    "nama": "66 Diamond",
+    "hargaid": 18000,
+    "harga":"Rp18.000",
+    },
+        "ZIDMBL74": {
+    "nama": "74 Diamond",
+    "hargaid": 20000,
+    "harga":"Rp20.000",
+    },
+        "ZIDMBL83": {
+    "nama": "83 Diamond",
+    "hargaid": 22500,
+    "harga":"Rp22.500",
+    },
+        "ZIDMBL184": {
+    "nama": "184 Diamond",
+    "hargaid": 5000,
+    "harga":"Rp50.000",
+    },
+        "ZIDMBL366": {
+    "nama": "366 Diamond",
+    "hargaid": 100000,
+    "harga":"Rp100.000",
+    },
+        "ZIDMBL758": {
+    "nama": "758 Diamond",
+    "hargaid": 200000,
+    "harga":"Rp200.000",
+    },
+ },
+}
 //---------------------------[ Waktu Asia & Time ]--------------------------------//
 
 const hariini = moment.tz('Asia/Jakarta').format('dddd, DD MMMM YYYY')
@@ -73,6 +637,9 @@ var tebaklirik = db.data.game.lirik = []
 var tebaktebakan = db.data.game.tebakan = []
 var vote = db.data.others.vote = []
 
+/*let _premium = JSON.parse(fs.readFileSync('./json/premium.json'))*/
+let db_respon_list = JSON.parse(fs.readFileSync('./json/list-message.json'))
+
 //━━━━━━━━━━━━━━━[ MODULE EXPORTS ]━━━━━━━━━━━━━━━━━//
 
 module.exports = liaacans = async (liaacans, m, chatUpdate, store) => {
@@ -98,7 +665,8 @@ var groupAdmins = m.isGroup ? await participants.filter(v => v.admin !== null).m
 var groupOwner = m.isGroup ? groupMetadata.owner : ''
  var isBotAdmins = m.isGroup ? groupAdmins.includes(botNumber) : false
  var isAdmins = m.isGroup ? groupAdmins.includes(m.sender) : false
- var isPremium = isCreator || global.premium.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender) || false
+var isPremium = isCreator || global.premium.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender) || false
+ /*var isPremium = isCreator ? true : premium.checkPremiumUser(m.sender, _premium)*/ //Fix Aja Klau Bisa
 
 	
 //━━━━━━━━━━━━━━━[ FUNCTION ]━━━━━━━━━━━━━━━━━//
@@ -265,12 +833,12 @@ return
 const ftroli ={key: {fromMe: false,"participant":"0@s.whatsapp.net", "remoteJid": "status@broadcast"}, "message": {orderMessage: {itemCount: 2022,status: 200, jpegThumbnail: global.thumb, surface: 200, message: '©Created By LiaaCans BOT', orderTitle: 'memek', sellerJid: '0@s.whatsapp.net'}}, contextInfo: {"forwardingScore":999,"isForwarded":true},sendEphemeral: true}
 		const fdoc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {documentMessage: {title: '©LiaaCans',jpegThumbnail: global.thumb}}}
 		const fvn = {key: {participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: "status@broadcast" } : {})},message: { "audioMessage": {"mimetype":"audio/ogg; codecs=opus","seconds":359996400,"ptt": "true"}} } 
-		const fgif = {key: {participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: "status@broadcast" } : {})},message: {"videoMessage": { "title":'©LiaaCans', "h": `Hmm`,'seconds': '359996400', 'gifPlayback': 'true', 'caption': '©LiaaCans', 'jpegThumbnail': global.thumb}}}
-		const fgclink = {key: {participant: "0@s.whatsapp.net","remoteJid": "0@s.whatsapp.net"},"message": {"groupInviteMessage": {"groupJid": "6288213840883-1616169743@g.us","inviteCode": "m","groupName": "YT Aulia Rahman Official", "caption": '©LiaaCans', 'jpegThumbnail': global.thumb}}}
-		const fvideo = {key: { fromMe: false,participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: "status@broadcast" } : {}) },message: { "videoMessage": { "title":`${pushname}`, "h": `Hmm`,'seconds': '359996400', 'caption': `${pushname}`, 'jpegThumbnail': global.thumb}}}
-		const floc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: 'LiaaCans BOT',jpegThumbnail: thumb}}}
+		const fgif = {key: {participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: "status@broadcast" } : {})},message: {"videoMessage": { "title": global.fake, "h": `Hmm`,'seconds': '359996400', 'gifPlayback': 'true', 'caption': global.fake, 'jpegThumbnail': global.thumb}}}
+		const fgclink = {key: {participant: "0@s.whatsapp.net","remoteJid": "0@s.whatsapp.net"},"message": {"groupInviteMessage": {"groupJid": "6288213840883-1616169743@g.us","inviteCode": "m","groupName": "YT Aulia Rahman Official", "caption": global.fake, 'jpegThumbnail': global.thumb}}}
+		const fvideo = {key: { fromMe: false,participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: "status@broadcast" } : {}) },message: { "videoMessage": { "title": global.fake, "h": `Hmm`,'seconds': '359996400', 'caption': global.fake, 'jpegThumbnail': global.thumb}}}
+		const floc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: global.fake ,jpegThumbnail: thumb}}}
 		const fkontak = { key: {participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: `status@broadcast` } : {}) }, message: { 'contactMessage': { 'jpegThumbnail': global.thumb, jpegThumbnail: global.thumb,sendEphemeral: true}}}
-	    const fakestatus = {key: {fromMe: false,participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: "status@broadcast" } : {})},message: { "imageMessage": {"url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc","mimetype": "image/jpeg","caption": '©LiaaCans',"fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=","fileLength": "28777","height": 1080,"width": 1079,"mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=","fileEncSha256": "sR9D2RS5JSifw49HeBADguI23fWDz1aZu4faWG/CyRY=","directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69","mediaKeyTimestamp": "1610993486","jpegThumbnail": fs.readFileSync('./image/image.jpg'),"scansSidecar": "1W0XhfaAcDwc7xh1R8lca6Qg/1bB4naFCSngM2LKO2NoP5RI7K+zLw=="}}}
+	    const fakestatus = {key: {fromMe: false,participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: "status@broadcast" } : {})},message: { "imageMessage": {"url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc","mimetype": "image/jpeg","caption": global.fake,"fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=","fileLength": "28777","height": 1080,"width": 1079,"mediaKey": "vXmRR7ZUeDWjXy5iQk17TrowBzuwRya0errAFnXxbGc=","fileEncSha256": "sR9D2RS5JSifw49HeBADguI23fWDz1aZu4faWG/CyRY=","directPath": "/v/t62.7118-24/21427642_840952686474581_572788076332761430_n.enc?oh=3f57c1ba2fcab95f2c0bb475d72720ba&oe=602F3D69","mediaKeyTimestamp": "1610993486","jpegThumbnail": fs.readFileSync('./image/image.jpg'),"scansSidecar": "1W0XhfaAcDwc7xh1R8lca6Qg/1bB4naFCSngM2LKO2NoP5RI7K+zLw=="}}}
 	    const ftrolii = { 
 key: {
 fromMe: false, 
@@ -278,7 +846,7 @@ participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: "14169948404-13050808
 },
 "message": {
 "extendedTextMessage": {
-"text": "© Created LiaaCans BOT",
+"text": global.fake,
 "previewType": "NONE",
 "contextInfo": {
 "stanzaId": "3EB0382EDBB2",
@@ -297,9 +865,24 @@ participant: `0@s.whatsapp.net`, ...(m.chat ? { remoteJid: "" } : {})
 "fileLength": "64455",
 "pageCount": 1,
 "mediaKey": "P32GszzU5piUZ5HKluLD5h/TZzubVJ7lCAd1PIz3Qb0=",
-"fileName": `©${global.creator}`,
+"fileName": global.fake,
 "fileEncSha256": "ybdZlRjhY+aXtytT0G2HHN4iKWCFisG2W69AVPLg5yk="
 }}}
+const freply = {
+key: {
+fromMe: false, 
+participant: `0@s.whatsapp.net`, 
+...({ remoteJid: "" }) 
+}, 
+message: { 
+"imageMessage": { 
+"mimetype": "image/jpeg", 
+"caption": global.fake, 
+"jpegThumbnail": thumb
+}
+}
+}
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 //━━━━━━━━━━━━━━━[ RESPON CMD ]━━━━━━━━━━━━━━━━━//
 
 if (isMedia && m.msg.fileSha256 && (m.msg.fileSha256.toString('base64') in global.db.data.sticker)) {
@@ -323,6 +906,10 @@ liaacans.ev.emit('messages.upsert', msg)
 
 var createSerial = (size) => {
 return crypto.randomBytes(size).toString('hex').slice(0, size)
+}
+
+function monospace(string) {
+return '```' + string + '```'
 }
 	    
 if (('family100'+m.chat in _family100) && isCmd) {
@@ -581,6 +1168,48 @@ user.afkTime = -1
 luser.afkReason = ''
 }
 
+async function payment(jid, from, msg = { conversation: "Test" }, currency = "IDR", value = 5000) {
+  const paymentTest = {
+    amount: {
+      currencyCode: currency,
+      offset: 5000,
+      value: value
+    },
+    expiryTimestamp: 0,
+    amount1000: 10000 * 1000,
+    currencyCodeIso4217: currency,
+    requestFrom: from,
+    noteMessage: msg
+  }
+  await liaacans.relayMessage(jid, { requestPaymentMessage: paymentTest }, {}) 
+  return paymentTest
+}
+function randomNomor(min, max = null) {
+		  if (max !== null) {
+			min = Math.ceil(min);
+			max = Math.floor(max);
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		  } else {
+			return Math.floor(Math.random() * min) + 1
+		  }
+		}
+
+//Auto Block Nomor Luar Negeri
+if (m.sender.startsWith('212')) {
+liaacans.updateBlockStatus(m.sender, 'block')
+}
+if (m.sender.startsWith('1')) {
+liaacans.updateBlockStatus(m.sender, 'block')
+}
+if (m.sender.startsWith('237')) {
+liaacans.updateBlockStatus(m.sender, 'block')
+}
+if (m.sender.startsWith('885')) {
+liaacans.updateBlockStatus(m.sender, 'block')
+}
+if (m.sender.startsWith('880')) {
+liaacans.updateBlockStatus(m.sender, 'block')
+}
 
 //Push command To Console
 if (command) {
@@ -590,14 +1219,23 @@ console.log('\x1b[1;31m~\x1b[1;37m>', '[\x1b[1;32m LIAACANS \x1b[1;37m]', time, 
 
 switch(command) {
 case 'allmenu': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `BOT TELAH ONLINE : ${runtime(process.uptime())}`,jpegThumbnail: global.thumb}}}
 allmenu = `Hy Kak ${pushname}
+*${ucapanWaktu}*
+┌─❖ ⌜ 𝙄𝙉𝙁𝙊 𝙐𝙎𝙀𝙍 ⌟
+├ *Nama* : ${pushname}
+├ *Premium* : ${isPremium ? '✅' : `❌`}
+├ *Limit* : ${isPremium ? 'UNLIMITED' : `〽️${db.data.users[m.sender].limit}`}
+├ *Mode* : ${liaacans.public ? 'Public' : `Self`}
+├ *Prefix* :「 MULTI-PREFIX 」
+└─❖
 
-❖ Info Bot ❖
-
-🐰Bot Name : ${botname}
-🦅Owner : ${owner}
-🐶Owner Name : ${name}
-🐭Creator : ${creator}
+┌─❖ ⌜ 𝙄𝙉𝘿𝙊𝙉𝙀𝙎𝙄𝘼𝙉 𝙏𝙄𝙈𝙀 ⌟
+├ *Hari Ini* : ${hariini}
+├ *Wib* : ${barat} WIB
+├ *Wita* : ${tengah} WITA
+├ *Wit* : ${timur} WIT
+└─❖
 
 ❖ [ List All Menu ] ❖
 
@@ -754,6 +1392,12 @@ allmenu = `Hy Kak ${pushname}
 ├│${prefix}ping
 ├│${prefix}owner
 ├│${prefix}setppbot
+├│${prefix}listpc
+├│${prefix}listgc
+├│${prefix}mls
+├│${prefix}mlsy
+├│${prefix}mlsmile
+├│${prefix}mlsmiley
 ├│${prefix}sc
 ├│${prefix}join
 ├│${prefix}leave
@@ -763,12 +1407,35 @@ allmenu = `Hy Kak ${pushname}
 ├│${prefix}bcgc
 ├│${prefix}self
 ├│${prefix}public
+└─❖
+┌─❖ ⌜ Main Menu ⌟
+├│${prefix}topupmenu
+├│${prefix}tts
+├│${prefix}shopeepay
+├│${prefix}ovo
+├│${prefix}topupgame
+├│${prefix}listdmff
+├│${prefix}listdmml
+├│${prefix}listdmml2
+├│${prefix}buypulsa
+├│${prefix}topupff
+├│${prefix}topupml
+├│${prefix}topupml2
+├│${prefix}topupff2
+├│${prefix}rules
+├│${prefix}caraorder
+├│${prefix}cekstatus
+├│${prefix}item
+├│${prefix}additem
+├│${prefix}delitem
+├│${prefix}changeitem
 └─❖`
-let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'ping', buttonText: { displayText: 'Status Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, allmenu, creator)
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, allmenu, creator, m, { quoted: kafloc })
             }
          break
 case 'menu': case 'help': case 'commands': {
+            let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `BOT TELAH ONLINE : ${runtime(process.uptime())}`,jpegThumbnail: global.thumb}}}
             let jawab = `Hai Kak ${pushname}
 *${ucapanWaktu}*
 ┌─❖ ⌜ 𝙄𝙉𝙁𝙊 𝙐𝙎𝙀𝙍 ⌟
@@ -800,12 +1467,14 @@ case 'menu': case 'help': case 'commands': {
 ├│${prefix}islamicmenu
 ├│${prefix}chargermenu
 ├│${prefix}makermenu
+├│${prefix}mainmenu
 └─❖`
-            let buttons = [{ buttonId: 'allmenu', buttonText: { displayText: 'All Menu' }, type: 1 },{ buttonId: 'ping', buttonText: { displayText: 'Status Bot' }, type: 1 },{ buttonId: 'donasi', buttonText: { displayText: 'Donasi' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, jawab, footer)
+            let buttons = [{ buttonId: 'allmenu', buttonText: { displayText: 'ALL MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'donasi', buttonText: { displayText: 'DONASI' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, jawab, footer, m, { quoted: kafloc })
             }
             break
 case 'funmenu': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 funmenu = `┌─❖ ⌜ FUN MENU ⌟
 ├│${prefix}jadian
 ├│${prefix}jodohku
@@ -821,11 +1490,12 @@ funmenu = `┌─❖ ⌜ FUN MENU ⌟
 ├│${prefix}math
 ├│${prefix}suitpvp
 └─❖`
-let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'sc', buttonText: { displayText: 'Script Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, funmenu, creator)
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, funmenu, creator, m, { quoted: kafloc })
             }
             break
 case 'groupmenu': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 group = `┌─❖ ⌜ GROUP MENU ⌟
 ├│${prefix}kick
 ├│${prefix}add
@@ -853,11 +1523,12 @@ group = `┌─❖ ⌜ GROUP MENU ⌟
 ├│${prefix}antiwame
 ├│${prefix}antiviewonce
 └─❖`
-let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'sc', buttonText: { displayText: 'Script Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, group, creator)
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, group, creator, m, { quoted: kafloc })
             }
             break
 case 'convertmenu': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 convermenu = `┌─❖ ⌜ Converter Menu ⌟
 ├│${prefix}sticker
 ├│${prefix}smeme
@@ -869,11 +1540,12 @@ convermenu = `┌─❖ ⌜ Converter Menu ⌟
 ├│${prefix}emojimix
 ├│${prefix}emojimix2
 └─❖`
-let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'sc', buttonText: { displayText: 'Script Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, convermenu, creator)
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, convermenu, creator, m, { quoted: kafloc })
             }
             break
 case 'randommenu': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 rm = `┌─❖ ⌜ Random Menu ⌟
 ├│${prefix}pinterest
 ├│${prefix}wallpaper
@@ -881,11 +1553,13 @@ rm = `┌─❖ ⌜ Random Menu ⌟
 ├│${prefix}quotesanime
 ├│${prefix}wikimedia
 └─❖`
-let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'sc', buttonText: { displayText: 'Script Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, rm, creator)
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, rm, creator, m, { quoted: kafloc })
             }
             break
 case 'downloadmenu': {
+if(!isPremium)throw`Fitur Ini Khusus Untuk Premium`
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 downloadme = `┌─❖ ⌜ Download Menu ⌟
 ├│${prefix}play
 ├│${prefix}yts
@@ -901,17 +1575,28 @@ downloadme = `┌─❖ ⌜ Download Menu ⌟
 ├│${prefix}pindl
 ├│${prefix}umma
 └─❖`
-let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'sc', buttonText: { displayText: 'Script Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, downloadme, creator)
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, downloadme, creator, m, { quoted: kafloc })
             }
             break
 case 'ownermenu': {
+if(!isCreator)throw`Fitur Ini Khusus Untuk Owner`
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 ownerme = `┌─❖ ⌜ Owner Menu ⌟
+├│${prefix}createcp
+├│${prefix}listcp
+├│${prefix}terminate
 ├│${prefix}ping
 ├│${prefix}owner
 ├│${prefix}sc
 ├│${prefix}join
 ├│${prefix}setppbot
+├│${prefix}listgc
+├│${prefix}listpc
+├│${prefix}mls
+├│${prefix}mlsy
+├│${prefix}mlsmile
+├│${prefix}mlsmiley
 ├│${prefix}leave
 ├│${prefix}block
 ├│${prefix}unblock
@@ -920,22 +1605,24 @@ ownerme = `┌─❖ ⌜ Owner Menu ⌟
 ├│${prefix}self
 ├│${prefix}public
 └─❖`
-let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'sc', buttonText: { displayText: 'Script Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, ownerme, creator)
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, ownerme, creator, m, { quoted: kafloc })
             }
             break
 case 'anonymousmenu': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 cht = `┌─❖ ⌜ Anonymous Menu ⌟
 ├│${prefix}anonymous
 ├│${prefix}start
 ├│${prefix}next
 ├│${prefix}keluar
 └─❖`
-let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'sc', buttonText: { displayText: 'Script Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, cht, creator)
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, cht, creator, m, { quoted: kafloc })
             }
             break
 case 'databasemenu': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 dbm = `┌─❖ ⌜ Database Menu ⌟
 ├│${prefix}setcmd
 ├│${prefix}listcmd
@@ -946,11 +1633,12 @@ dbm = `┌─❖ ⌜ Database Menu ⌟
 ├│${prefix}getmsg
 ├│${prefix}delmsg
 └─❖`
-let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'sc', buttonText: { displayText: 'Script Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, dbm, creator)
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, dbm, creator, m, { quoted: kafloc })
             }
             break
 case 'islamicmenu': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 islmm = `┌─❖ ⌜ Islamic Menu ⌟
 ├│${prefix}iqra
 ├│${prefix}hadist
@@ -958,11 +1646,12 @@ islmm = `┌─❖ ⌜ Islamic Menu ⌟
 ├│${prefix}juzamma
 ├│${prefix}tafsirquran
 └─❖`
-let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'sc', buttonText: { displayText: 'Script Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, islmm, creator)
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, islmm, creator, m, { quoted: kafloc })
             }
             break
 case 'chargermenu': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 chargermenu = `┌─❖ ⌜ Charger Menu ⌟
 ├│${prefix}bass
 ├│${prefix}blown
@@ -976,11 +1665,12 @@ chargermenu = `┌─❖ ⌜ Charger Menu ⌟
 ├│${prefix}slow
 ├│${prefix}tupai
 └─❖`
-let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'sc', buttonText: { displayText: 'Script Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, chargermenu, creator)
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, chargermenu, creator, m, { quoted: kafloc })
             }
             break
 case 'makermenu': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 mkrmnu = `┌─❖ ⌜ Maker Menu ⌟
 ├│${prefix}crossfire
 ├│${prefix}ffcover
@@ -992,11 +1682,13 @@ mkrmnu = `┌─❖ ⌜ Maker Menu ⌟
 ├│${prefix}galaxy
 ├│${prefix}neon
 └─❖`
-let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'sc', buttonText: { displayText: 'Script Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, mkrmnu, creator)
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, mkrmnu, creator, m, { quoted: kafloc })
             }
             break
 case 'bugmenu': {
+if (!isCreator) throw mess.owner
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 bug = `┌─❖ ⌜ Bug Menu (khusus owner) ⌟
 ├│${prefix}inibug
 ├│${prefix}poll
@@ -1024,11 +1716,12 @@ bug = `┌─❖ ⌜ Bug Menu (khusus owner) ⌟
 ├│${prefix}bugie
 ├│${prefix}bugtag
 └─❖`
-let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'sc', buttonText: { displayText: 'Script Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, bug, creator)
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, bug, creator, m, { quoted: kafloc })
             }
             break
 case 'donasi': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 donasi = `*「 🐰DONASI BY LIAACANS🐰 」*
 
 • Payment : Ovo/Dana/Gopay
@@ -1036,11 +1729,39 @@ donasi = `*「 🐰DONASI BY LIAACANS🐰 」*
 • Pulsa : ${global.pulsa}
 
 Donasi Ya Kak!! Biar Bot On Terus!`
-let buttons = [{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-await liaacans.sendButtonText(m.chat, buttons, donasi, creator)
+let buttons = [{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+await liaacans.sendButtonText(m.chat, buttons, donasi, creator, m, { quoted: kafloc })
 }
 break
+case 'mainmenu': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
+mainmenu = `┌─❖ ⌜ Main Menu ⌟
+├│${prefix}topupmenu
+├│${prefix}tts
+├│${prefix}shopeepay
+├│${prefix}ovo
+├│${prefix}listdmff
+├│${prefix}listdmml
+├│${prefix}listdmml2
+├│${prefix}buypulsa
+├│${prefix}topupff
+├│${prefix}topupml
+├│${prefix}topupml2
+├│${prefix}topupff2
+├│${prefix}rules
+├│${prefix}caraorder
+├│${prefix}cekstatus
+├│${prefix}item
+├│${prefix}additem
+├│${prefix}delitem
+├│${prefix}changeitem
+└─❖`
+let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'OWNER' }, type: 1 }]
+            await liaacans.sendButtonText(m.chat, buttons, mainmenu, creator, m, { quoted: kafloc })
+            }
+break
 case 'sc': case 'script': case 'sourcecode': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 source =`❖ Source Code By ❖
 
 Author : Aulia Rahman
@@ -1062,7 +1783,7 @@ Big Thanks To
 • All Creator Bot
 • All Subscriber Ku`
 let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️Back Menu' }, type: 1 },{ buttonId: 'ping', buttonText: { displayText: 'Status Bot' }, type: 1 },{ buttonId: 'owner', buttonText: { displayText: 'Owner' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, source, creator)
+            await liaacans.sendButtonText(m.chat, buttons, source, creator, m, { quoted: kafloc })
             }
 break
 case 'revoke': {
@@ -1470,10 +2191,16 @@ await liaacans.sendMessage(m.chat, { disappearingMessagesInChat: false }).then((
 }
 }
 break
-case 'ffcover': case 'crossfire': case 'galaxy': case 'glass': case 'neon': case 'beach': case 'blackpink': case 'igcertificate': case 'ytcertificate': {
+case 'ffcover': case 'crossfire': case 'galaxy': case 'glass': case 'neon': case 'beach': case 'igcertificate': case 'ytcertificate': {
                 if (!text) throw 'No Query Text'
                 m.reply(mess.wait)
                 liaacans.sendMessage(m.chat, { image: { url: api('liaacans', '/ephoto/' + command, { text: text }, 'apikey') }, caption: `Ephoto ${command}` }, { quoted: m })
+            }
+            break
+case 'blackpink': {
+      if (!text) throw 'No Query Text'
+                m.reply(mess.wait)
+                liaacans.sendMessage(m.chat, { image: { url:  fetchJson('https://restapi-liaacans.herokuapp.com/api/textpro/black-pink?text=Revita&apikey=APIKEY') }, caption: `Ephoto ${command}` }, { quoted: m })
             }
             break
 case 'bass': case 'blown': case 'deep': case 'earrape': case 'fast': case 'fat': case 'nightcore': case 'reverse': case 'robot': case 'slow': case 'smooth': case 'tupai':
@@ -2417,10 +3144,10 @@ case 'tiktokmp3': case 'tiktokaudio': {
                 if (!text) throw 'No Query Url!'
                 m.reply(mess.wait)
                 if (/(?:\/p\/|\/reel\/|\/tv\/)([^\s&]+)/.test(isUrl(text)[0])) {
-                    let anu = await fetchJson(api('zenz', '/downloader/instagram2', { url: isUrl(text)[0] }, 'apikey'))
+                    let anu = await fetchJson(api('liaacans', '/downloader/instagram2', { url: isUrl(text)[0] }, 'apikey'))
                     for (let media of anu.data) liaacans.sendFileUrl(m.chat, media, `Download Url Instagram From ${isUrl(text)[0]}`, m)
                 } else if (/\/stories\/([^\s&]+)/.test(isUrl(text)[0])) {
-                    let anu = await fetchJson(api('zenz', '/downloader/instastory', { url: isUrl(text)[0] }, 'apikey'))
+                    let anu = await fetchJson('https://restapi-liaacans.herokuapp.com/api/download/tiktok2?url=https://vt.tiktok.com/ZSeJ7P56G&apikey=APIKEY')
                     liaacans.sendFileUrl(m.chat, anu.media[0].url, `Download Url Instagram From ${isUrl(text)[0]}`, m)
                 }
             }
@@ -2429,7 +3156,7 @@ case 'tiktokmp3': case 'tiktokaudio': {
                 if (!isPremium) throw mess.prem
                 if (!text) throw 'No Query Title'
                 m.reply(mess.wait)
-                let anu = await fetchJson(api('zenz', '/downloader/joox', { query: text }, 'apikey'))
+                let anu = await fetchJson(api('liaacans', '/downloader/joox', { query: text }, 'apikey'))
                 let msg = await liaacans.sendImage(m.chat, anu.result.img, `⭔ Title : ${anu.result.lagu}\n⭔ Album : ${anu.result.album}\n⭔ Singer : ${anu.result.penyanyi}\n⭔ Publish : ${anu.result.publish}\n⭔ Lirik :\n${anu.result.lirik.result}`, m)
                 liaacans.sendMessage(m.chat, { audio: { url: anu.result.mp4aLink }, mimetype: 'audio/mpeg', fileName: anu.result.lagu+'.m4a' }, { quoted: msg })
             }
@@ -2438,7 +3165,7 @@ case 'tiktokmp3': case 'tiktokaudio': {
                 if (!isPremium) throw mess.prem
                 if (!text) throw 'No Query Title'
                 m.reply(mess.wait)
-                let anu = await fetchJson(api('zenz', '/downloader/soundcloud', { url: isUrl(text)[0] }, 'apikey'))
+                let anu = await fetchJson(api('liaacans', '/downloader/soundcloud', { url: isUrl(text)[0] }, 'apikey'))
                 let msg = await liaacans.sendImage(m.chat, anu.result.thumb, `⭔ Title : ${anu.result.title}\n⭔ Url : ${isUrl(text)[0]}`)
                 liaacanssendMessage(m.chat, { audio: { url: anu.result.url }, mimetype: 'audio/mpeg', fileName: anu.result.title+'.m4a' }, { quoted: fkontak })
             }
@@ -2447,7 +3174,7 @@ case 'tiktokmp3': case 'tiktokaudio': {
 	        if (!isPremium) throw mess.prem
                 if (!text) throw 'Masukkan Query Link!'
                 m.reply(mess.wait)
-                let anu = await fetchJson(api('zenz', '/api/downloader/twitter', { url: text }, 'apikey'))
+                let anu = await fetchJson(api('liaacans', '/api/downloader/twitter', { url: text }, 'apikey'))
                 let buttons = [
                     {buttonId: `twittermp3 ${text}`, buttonText: {displayText: '► Audio'}, type: 1}
                 ]
@@ -2465,7 +3192,7 @@ case 'tiktokmp3': case 'tiktokaudio': {
                 if (!isPremium) throw mess.prem
                 if (!text) throw 'Masukkan Query Link!'
                 m.reply(mess.wait)
-                let anu = await fetchJson(api('zenz', '/api/downloader/twitter', { url: text }, 'apikey'))
+                let anu = await fetchJson(api('liaacans', '/api/downloader/twitter', { url: text }, 'apikey'))
                 let buttons = [
                     {buttonId: `twitter ${text}`, buttonText: {displayText: '► Video'}, type: 1}
                 ]
@@ -2547,13 +3274,15 @@ break
 case 'block': {
 if (!isCreator) throw mess.owner
 let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
-await liaacans.updateBlockStatus(users, 'block').then((res) => m.reply(jsonformat(res))).catch((err) => m.reply(jsonformat(err)))
+await liaacans.updateBlockStatus(users, 'block')
+ m.reply(`Sukses Block User`)
 }
 break
 case 'unblock': {
 if (!isCreator) throw mess.owner
 let users = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text.replace(/[^0-9]/g, '')+'@s.whatsapp.net'
-await liaacans.updateBlockStatus(users, 'unblock').then((res) => m.reply(jsonformat(res))).catch((err) => m.reply(jsonformat(err)))
+await liaacans.updateBlockStatus(users, 'unblock')
+m.reply(`Sukses Unblock User`)
 }
 break
 case 'public': {
@@ -2582,18 +3311,22 @@ case 'menfes': case 'menfess': {
             var m1 = mon.split("|")[0]
             var m2 = mon.split("|")[1]
             var m3 = mon.split("|")[2]
-               let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${author}`,jpegThumbnail: global.thumb}}}
+               let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `BOT TELAH ONLINE : ${runtime(process.uptime())}`,jpegThumbnail: global.thumb}}}
                let mq1 = m1 + '@s.whatsapp.net'
                let kawk = ('PESAN RAHASIA')
                let me = m.sender
                let ments = [mq1, me]
                let pjtxt = `Pesan Dari : ${m2} \nUntuk : @${mq1.split('@')[0]}\n\n${m3}`
-               let buttons = [{ buttonId: 'confirm', buttonText: { displayText: 'CONFIRM' }, type: 1 }]
+               let buttons = [{ buttonId: 'menfessconfirm', buttonText: { displayText: 'CONFIRM' }, type: 1 }]
             await liaacans.sendButtonText(m1 + '@s.whatsapp.net', buttons, pjtxt, kawk, m, {mentions: ments, quoted: kafloc})
             let akhji = `Pesan Telah Terkirim\nKe @${mq1.split('@')[0]}`
-            await liaacans.sendButtonText(m.chat, buttons, akhji, creator, m, {mentions: ments})
+            await liaacans.sendButtonText(m.chat, buttons, akhji, creator, m, {mentions: ments, quoted: kafloc})
             }
             break
+case 'menfessconfirm':
+		 liaacans.sendMessage(q, {text: `Sudah Di Confirmasi Nih Menfess nyaa🤭`})
+		  m.reply(`Terimakasih Menfess Telah Diterima.`)
+		break
 
 //----------------[ BUG ALL FIXED ]-----------------//
 // JANGAN DI SALAH GUNAKAN FITUR INI!!!
@@ -3121,31 +3854,6 @@ case 'runtime': {
                 await liaacans.sendButtonText(m.chat, buttons, lowq, creator, m, { quoted: fkontak })
                 }
             break
-/*case 'bc': // Fix aja Kalau Bisa
-                if (!isCreator) throw mess.owner
-                if (args.length < 2) throw `Masukkan text`
-                let chiit = await liaacans.chats.all()
-                if (isImage || isQuotedImage) {
-                    let encmedia = isQuotedImage ? JSON.parse(JSON.stringify(msg).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : msg
-                    let media = await liaacans.downloadMediaMessage(encmedia)
-                    for (let i of chiit){
-                        liaacans.sendMessage(i.jid, media, image, {caption: `*「 SKIMURA BOT BROADCAST 」*\n\n${body.slice(4)}`})
-                    }
-                    reply(`Sukses`)
-                } else if (isVideo || isQuotedVideo) {
-                    let encmedia = isQuotedVideo ? JSON.parse(JSON.stringify(msg).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : msg
-                    let media = await liaacans.downloadMediaMessage(encmedia)
-                    for (let i of chiit){
-                        liaacans.sendMessage(i.jid, media, video, {caption: `*「 SKIMURA BOT BROADCAST 」*\n\n${body.slice(4)}`})
-                    }
-                    m.reply(`Sukses`)
-                } else {
-                    for (let i of chiit){
-                        liaacans.sendMessage(i.jid, `*「 SKIMURA BOT BROADCAST 」*\n\n${body.slice(4)}`)
-                    }
-                    m.reply(`Sukses`)
-                }
-                break*/
 case 'setppbot': {
                 if (!isCreator) throw mess.owner
                 if (!quoted) throw `Kirim/Reply Image Dengan Caption ${prefix + command}`
@@ -3157,12 +3865,2447 @@ case 'setppbot': {
                 }
                 break
 case 'listonline': case 'liston': {
+            if (!isCreator) throw mess.owner
                     let id = args && /\d+\-\d+@g.us/.test(args[0]) ? args[0] : m.chat
                     let online = [...Object.keys(store.presences[id]), botNumber]
                     liaacans.sendText(m.chat, 'List Online:\n\n' + online.map(v => '⭔ @' + v.replace(/@.+/, '')).join`\n`, m, { mentions: online })
              }
              break
+case 'listpc': {
+      if (!isCreator) throw mess.owner
+                 let anu = await store.chats.all().filter(v => v.id.endsWith('.net')).map(v => v.id)
+                 let teks = `⬣ *LIST PERSONAL CHAT*\n\nTotal Chat : ${anu.length} Chat\n\n`
+                 for (let i of anu) {
+                     let nama = store.messages[i].array[0].pushName
+                     teks += `⬡ *Nama :* ${nama}\n⬡ *User :* @${i.split('@')[0]}\n⬡ *Chat :* https://wa.me/${i.split('@')[0]}\n\n────────────────────────\n\n`
+                 }
+                 liaacans.sendTextWithMentions(m.chat, teks, m)
+             }
+             break
+                case 'listgc': {
+                if (!isCreator) throw mess.owner
+                 let anu = await store.chats.all().filter(v => v.id.endsWith('@g.us')).map(v => v.id)
+                 let teks = `⬣ *LIST GROUP CHAT*\n\nTotal Group : ${anu.length} Group\n\n`
+                 for (let i of anu) {
+                     let metadata = await liaacans.groupMetadata(i)
+                     teks += `⬡ *Nama :* ${metadata.subject}\n⬡ *Owner :* ${metadata.owner !== undefined ? '@' + metadata.owner.split`@`[0] : 'Tidak diketahui'}\n⬡ *ID :* ${metadata.id}\n⬡ *Dibuat :* ${moment(metadata.creation * 1000).tz('Asia/Jakarta').format('DD/MM/YYYY HH:mm:ss')}\n⬡ *Member :* ${metadata.participants.length}\n\n────────────────────────\n\n`
+                 }
+                 liaacans.sendTextWithMentions(m.chat, teks, m)
+             }
+             break
+case 'jadibot': { // Fix Aja Kalau Bisa Kak!
+if(!isPremium) throw mess.prem
+jadibot(liaacans, m, m.chat)
+}
+break
+case 'listjadibot':
+if (!isPremium) throw mess.prem
+try {
+let user = [... new Set([...global.conns.filter(liaacans => liaacans.user).map(liaacans => liaacans.user)])]
+te = "*List Jadibot*\n\n"
+for (let i of user){
+let y = await liaacans.decodeJid(i.id)
+te += " × User : @" + y.split("@")[0] + "\n"
+te += " × Name : " + i.name + "\n\n"
+}
+liaacans.sendMessage(m.chat,{text:te,mentions: [y], },{quoted:m})
+} catch (err) {
+m.reply(`Belum Ada User Yang Jadibot`)
+}
+break
+case 'topupmenu': {
+topup = `*｢  TOPUP MENU OTOMATIS  ｣*
+  ● ${prefix}topup
+  ● ${prefix}topupff
+  ● ${prefix}topupml
+  ● ${prefix}topupml2
+  ● ${prefix}listdml2
+  ● ${prefix}listdmff
+  ● ${prefix}listdmml
+  ● ${prefix}topupff2
+  ● ${prefix}listdmff2
+  ● ${prefix}mlsmile (Owner Only)
+    
+  *｢ STORE MENU ｣*
+ ● ${prefix}item
+ ● ${prefix}additem
+ ● ${prefix}delitem
+ ● ${prefix}changeitem
+ ● proses
+ ● done
 
+  *｢ JASA SUNTIK SOSMED ｣*
+  ● ${prefix}order ( cara order) 
+  ● ${prefix}followers [jum|targ] 
+  ● ${prefix}view [jum|link] 
+  ● ${prefix}like [jum|link] 
+  ● ${prefix}cekstatus [id] 
+  ● ${prefix}prichlist`
+ let buttons = [{ buttonId: 'menu', buttonText: { displayText: 'Menu' }, type: 1 }]
+liaacans.sendButtonText(m.chat, buttons, topup, creator)
+}
+break 
+case 'tts':
+let eng = text.split("|")[0]
+let cap = text.split("|")[1]
+  if (!q.includes("@")) return liaacans.sendMessage(m.chat, `ᴇxᴀᴍᴘʟᴇ: ${prefix}ᴇɴ|ʜᴇʟʟᴏ`, text, {quoted: m})
+ var dtt = `${cap}`
+  m.reply(mess.wait)
+  var ranm = getRandom('.mp3')
+		var	rano = getRandom('.ogg')
+				dtt.length > 300
+         gtts.save(ranm, dtt, function() {
+          exec(`ffmpeg -i ${ranm} -ar 48000 -vn -c:a libopus ${rano}`, (err) => {
+          fs.unlinkSync(ranm)
+          buffer = fs.readFileSync(rano)
+          if (err) return m.reply('error')
+          liaacans.sendMessage(m.chat, { audio: buffer, mimetype: 'audio/mp4', ptt: true})
+          fs.unlinkSync(rano)
+          })
+          })
+  break
+case 'shopeepay':{
+if (m.isGroup) return m.reply('Fitur Ini Hanya Bisa Digunakan Di Private Chat!')
+let noshp = text
+if (isNaN(parseInt(noshp))) return m.reply(`${command} 6285737134572`)
+const sections = [
+    {
+	title: `Convert ShopeePay`,
+	rows: [
+	    {title: "Rp10.000", rowId: `${prefix}cvspay ${noshp}|1`}
+	]
+    },
+    {
+	title: `Convert ShopeePay`,
+	rows: [
+	    {title: "Rp20.000", rowId: `${prefix}cvspay ${noshp}|2`}
+	]
+    },
+    {
+	title: `Convert ShopeePay`,
+	rows: [
+	    {title: "Rp25.000", rowId: `${prefix}cvspay ${noshp}|3`}
+	]
+    },
+    {
+	title: `Convert ShopeePay`,
+	rows: [
+	    {title: "Rp50.000", rowId: `${prefix}cvspay ${noshp}|4`}
+	]
+    },
+    {
+	title: `Convert ShopeePay`,
+	rows: [
+	    {title: "Rp60.000", rowId: `${prefix}cvspay ${noshp}|6`}
+	]
+    },
+    {
+	title: `Convert ShopeePay`,
+	rows: [
+	    {title: "Rp75.000", rowId: `${prefix}cvspay ${noshp}|7`}
+	]
+    },
+    {
+	title: `Convert ShopeePay`,
+	rows: [
+	    {title: "Rp100.000", rowId: `${prefix}cvspay ${noshp}|8`}
+	]
+    },
+    {
+	title: `Convert ShopeePay`,
+	rows: [
+	    {title: "Rp200.000", rowId: `${prefix}cvspay ${noshp}|10`}
+	]
+    },
+]
+let isian = `    
+Silahkan Pilih Nominal Saldo E-wallet Yang Akan Anda Convert Ke Shopeepay!.
+
+Note: Pembayaran Disini Hanya Menggunakan Server, Owner Tidak Mendapatkan Hasil Apapun Disini Karena Diproses Langsung Dari Server!.
+
+Jika Sudah Melakukan Pemilihan Nominal, Anda Akan Dikirimkan Qris Pembayaran Dan Anda Harus Membayar Melalu Aplikasi E-wallet Yang Mendukung Qris, Pastikan Nominal Yang Anda Krimkan Harus Sama Dengan Nominal Yang Diminta!.
+
+Jika Anda Sudah Melakukan Pembayaran, Silahkan Tunggu 1-5 Menit Dan Melakukan Pengecekan Secara Berkala Pada Saldo Anda!.`
+const listMessage = {
+  text: isian,
+  footer: "Created By LiaaCans BOT",
+  title: "━━[ Nominal saldo Shopeepay ]━━",
+  buttonText: "Klik Disini",
+  sections
+}
+const tessgh = await liaacans.sendMessage(m.chat, listMessage)
+break
+}
+case 'ovo':{
+if (m.isGroup) return m.reply('Fitur Ini Hanya Bisa Digunakan Di Private Chat!')
+let noshp = text
+if (isNaN(parseInt(noshp))) return m.reply(`${command} 6281236167286`)
+const sections = [
+    {
+	title: `Convert Ovo`,
+	rows: [
+	    {title: "Rp20.000", rowId: `${prefix}cvspay ${noshp}|11`}
+	]
+    },
+    {
+	title: `Convert Ovo`,
+	rows: [
+	    {title: "Rp25.000", rowId: `${prefix}cvspay ${noshp}|12`}
+	]
+    },
+    {
+	title: `Convert Ovo`,
+	rows: [
+	    {title: "Rp30.000", rowId: `${prefix}cvspay ${noshp}|13`}
+	]
+    },
+    {
+	title: `Convert Ovo`,
+	rows: [
+	    {title: "Rp40.000", rowId: `${prefix}cvspay ${noshp}|14`}
+	]
+    },
+    {
+	title: `Convert Ovo`,
+	rows: [
+	    {title: "Rp50.000", rowId: `${prefix}cvspay ${noshp}|15`}
+	]
+    },
+    {
+	title: `Convert Ovo`,
+	rows: [
+	    {title: "Rp60.000", rowId: `${prefix}cvspay ${noshp}|16`}
+	]
+    },
+    {
+	title: `Convert Ovo`,
+	rows: [
+	    {title: "Rp70.000", rowId: `${prefix}cvspay ${noshp}|17`}
+	]
+    },
+    {
+	title: `Convert Ovo`,
+	rows: [
+	    {title: "Rp75.000", rowId: `${prefix}cvspay ${noshp}|18`}
+	]
+    },
+    {
+	title: `Convert Ovo`,
+	rows: [
+	    {title: "Rp90.000", rowId: `${prefix}cvspay ${noshp}|19`}
+	]
+    },
+    {
+	title: `Convert Ovo`,
+	rows: [
+	    {title: "Rp100.000", rowId: `${prefix}cvspay ${noshp}|20`}
+	]
+    },
+    {
+	title: `Convert Ovo`,
+	rows: [
+	    {title: "Rp125.000", rowId: `${prefix}cvspay ${noshp}|21`}
+	]
+    },
+     {
+	title: `Convert Ovo`,
+	rows: [
+	    {title: "Rp150.000", rowId: `${prefix}cvspay ${noshp}|22`}
+	]
+    },
+    {
+	title: `Convert Ovo`,
+	rows: [
+	    {title: "Rp200.000", rowId: `${prefix}cvspay ${noshp}|22`}
+	]
+    },
+]
+let isian = `    
+Silahkan Pilih Nominal Saldo E-wallet Yang Akan Anda Convert Ke Ovo!.
+
+Note: Pembayaran Disini Hanya Menggunakan Server, Owner Tidak Mendapatkan Hasil Apapun Disini Karena Diproses Langsung Dari Server!.
+
+Jika Sudah Melakukan Pemilihan Nominal, Anda Akan Dikirimkan Qris Pembayaran Dan Anda Harus Membayar Melalu Aplikasi E-wallet Yang Mendukung Qris, Pastikan Nominal Yang Anda Krimkan Harus Sama Dengan Nominal Yang Diminta!.
+
+Jika Anda Sudah Melakukan Pembayaran, Silahkan Tunggu 1-2 Menit Dan Melakukan Pengecekan Secara Berkala Pada Saldo Anda!.`
+const listMessage = {
+  text: isian,
+  footer: "Created By LiaaCans BOT",
+  title: "━━[ Nominal saldo Ovo ]━━",
+  buttonText: "Klik Disini",
+  sections
+}
+const tessgh = await liaacans.sendMessage(m.chat, listMessage)
+break
+}
+case 'cvspay': {
+if (m.isGroup) return m.reply('Fitur Ini Hanya Bisa Digunakan Di Private Chat!')
+let idff = text.split("|")[0]
+let produkid = text.split("|")[1]
+let cvnya = await convertSaldo(`${produkid}`, `${idff}`)
+let byr = `*─ 「 CEK TRANSAKSIMU 」 ─*
+     
+_Berikut Adalah Transaksi Anda_
+_》Saldo : ${cvnya.product}_
+_》No Tujuan : ${idff}_
+_》Total Tagihan : ${cvnya.tagihan}_
+_》Id Trx : ${cvnya.order_id}_
+
+Silahkan Scan Qris Diatas Untuk Melakukan Pembayaran
+Saldo Akan Masuk Otomatis Dalam Waktu 1-5 Menit Setelah Melakukan Pembayaran!.`
+liaacans.sendMessage(m.chat, { image: { url: cvnya.img }, caption: `${byr}` }, { quoted: m })
+break
+}
+case 'topup':{
+const sections = [
+    {
+	title: `Format: ${prefix}topupff id|jumlah`,
+	rows: [
+	    {title: "List Diamond Free Fire", rowId: `${prefix}listdmff`}
+	]
+    },
+    {
+	title: `Format: ${prefix}topupff2 id|jumlah`,
+	rows: [
+	    {title: "List Diamond Free Fire Server 2", rowId: `${prefix}listdmff2`}
+	]
+    },
+   {
+   	title: `Format: ${prefix}topupml id|server|jumlah`,
+	rows: [
+	    {title: "List Diamond Mobile Legends", rowId: `${prefix}listdmml`}
+	]
+    },
+   {
+   	title: `Format: ${prefix}topupml2 id|server|jumlah`,
+	rows: [
+	    {title: "List Diamond Mobile Legends Server 2", rowId: `${prefix}listdmml2`}
+	]
+    },
+]
+let isian = `    
+_Berikut Adalah Data Akun Anda_
+_》Name : ${pushname}_
+_》Id : ${m.sender.replace("@s.whatsapp.net", "")}_
+
+Note: Owner Paling Gnteng/Cntip`
+const listMessage = {
+  text: isian,
+  footer: "Created By LiaaCans BOT",
+  title: "━━[ List Topup LiaaCans ]━━",
+  buttonText: "Klik Disini",
+  sections
+}
+const tessgh = await liaacans.sendMessage(m.chat, listMessage)
+break
+}
+case 'listdmff':
+lisnya = `*── 「 DIAMOND FREE FIRE 」 ──*
+
+_》${list.ff.FF5.nama} : ${list.ff.FF5.harga}_
+_》${list.ff.FF10.nama} : ${list.ff.FF10.harga}_
+_》${list.ff.FF15.nama} : ${list.ff.FF15.harga}_
+_》${list.ff.FF20.nama} : ${list.ff.FF20.harga}_
+_》${list.ff.FF25.nama} : ${list.ff.FF25.harga}_
+_》${list.ff.FF30.nama} : ${list.ff.FF30.harga}_
+_》${list.ff.FF40.nama} : ${list.ff.FF40.harga}_
+_》${list.ff.FF50.nama} : ${list.ff.FF50.harga}_
+_》${list.ff.FF55.nama} : ${list.ff.FF55.harga}_
+_》${list.ff.FF60.nama} : ${list.ff.FF60.harga}_
+_》${list.ff.FF70.nama} : ${list.ff.FF70.harga}_
+_》${list.ff.FF75.nama} : ${list.ff.FF75.harga}_
+_》${list.ff.FF80.nama} : ${list.ff.FF80.harga}_
+_》${list.ff.FF90.nama} : ${list.ff.FF90.harga}_
+_》${list.ff.FF95.nama} : ${list.ff.FF95.harga}_
+_》${list.ff.FF100.nama} : ${list.ff.FF100.harga}_
+_》${list.ff.FF120.nama} : ${list.ff.FF120.harga}_
+_》${list.ff.FF130.nama} : ${list.ff.FF130.harga}_
+_》${list.ff.FF140.nama} : ${list.ff.FF140.harga}_
+_》${list.ff.FF145.nama} : ${list.ff.FF145.harga}_
+_》${list.ff.FF150.nama} : ${list.ff.FF150.harga}_
+_》${list.ff.FF160.nama} : ${list.ff.FF160.harga}_
+_》${list.ff.FF180.nama} : ${list.ff.FF180.harga}_
+_》${list.ff.FF190.nama} : ${list.ff.FF190.harga}_
+_》${list.ff.FF200.nama} : ${list.ff.FF200.harga}_
+_》${list.ff.FF210.nama} : ${list.ff.FF210.harga}_
+_》${list.ff.FFM.nama} : ${list.ff.FFM.harga}_
+_》${list.ff.FF250.nama} : ${list.ff.FF250.harga}_
+_》${list.ff.FF280.nama} : ${list.ff.FF280.harga}_
+_》${list.ff.FF300.nama} : ${list.ff.FF300.harga}_
+_》${list.ff.FF355.nama} : ${list.ff.FF355.harga}_
+_》${list.ff.FF350.nama} : ${list.ff.FF350.harga}_
+_》${list.ff.FF375.nama} : ${list.ff.FF375.harga}_
+_》${list.ff.FF400.nama} : ${list.ff.FF400.harga}_
+_》${list.ff.FF405.nama} : ${list.ff.FF405.harga}_
+_》${list.ff.FF425.nama} : ${list.ff.FF425.harga}_
+_》${list.ff.FF475.nama} : ${list.ff.FF475.harga}_
+_》${list.ff.FF500.nama} : ${list.ff.FF500.harga}_
+_》${list.ff.FF510.nama} : ${list.ff.FF510.harga}_
+_》${list.ff.FF515.nama} : ${list.ff.FF515.harga}_
+_》${list.ff.FF512.nama} : ${list.ff.FF512.harga}_
+_》${list.ff.FF545.nama} : ${list.ff.FF545.harga}_
+_》${list.ff.FF565.nama} : ${list.ff.FF565.harga}_
+_》${list.ff.FF600.nama} : ${list.ff.FF600.harga}_
+_》${list.ff.FF635.nama} : ${list.ff.FF635.harga}_
+_》${list.ff.FF645.nama} : ${list.ff.FF645.harga}_
+_》${list.ff.FF655.nama} : ${list.ff.FF655.harga}_
+_》${list.ff.FF720.nama} : ${list.ff.FF720.harga}_
+_》${list.ff.FF700.nama} : ${list.ff.FF700.harga}_
+_》${list.ff.FF770.nama} : ${list.ff.FF770.harga}_
+_》${list.ff.FF790.nama} : ${list.ff.FF790.harga}_
+_》${list.ff.FF800.nama} : ${list.ff.FF800.harga}_
+_》${list.ff.FF860.nama} : ${list.ff.FF860.harga}_
+_》${list.ff.FF930.nama} : ${list.ff.FF930.harga}_
+_》${list.ff.FF1000.nama} : ${list.ff.FF1000.harga}_
+_》${list.ff.FF1050.nama} : ${list.ff.FF1050.harga}_
+_》${list.ff.FF1075.nama} : ${list.ff.FF1075.harga}_
+_》${list.ff.FF1080.nama} : ${list.ff.FF1080.harga}_
+_》${list.ff.FFB.nama} : ${list.ff.FFB.harga}_
+_》${list.ff.FF1200.nama} : ${list.ff.FF1200.harga}_
+_》${list.ff.FF1215.nama} : ${list.ff.FF1215.harga}_
+_》${list.ff.FF1300.nama} : ${list.ff.FF1300.harga}_
+_》${list.ff.FF1440.nama} : ${list.ff.FF1440.harga}_
+_》${list.ff.FF1450.nama} : ${list.ff.FF1450.harga}_
+_》${list.ff.FF1490.nama} : ${list.ff.FF1490.harga}_
+_》${list.ff.FF1510.nama} : ${list.ff.FF1510.harga}_
+_》${list.ff.FF1580.nama} : ${list.ff.FF1580.harga}_
+_》${list.ff.FF1795.nama} : ${list.ff.FF1795.harga}_
+_》${list.ff.FF1800.nama} : ${list.ff.FF1800.harga}_
+_》${list.ff.FF2000.nama} : ${list.ff.FF2000.harga}_
+_》${list.ff.FF2140.nama} : ${list.ff.FF2140.harga}_
+_》${list.ff.FF2190.nama} : ${list.ff.FF2190.harga}_
+_》${list.ff.FF2210.nama} : ${list.ff.FF2210.harga}_
+_》${list.ff.FF2280.nama} : ${list.ff.FF2280.harga}_
+_》${list.ff.FF2355.nama} : ${list.ff.FF2355.harga}_
+_》${list.ff.FF2720.nama} : ${list.ff.FF2720.harga}_
+_》${list.ff.FF4000.nama} : ${list.ff.FF4000.harga}_
+_》${list.ff.FF77290.nama} : ${list.ff.FF77290.harga}_
+
+Cara Pembelian:
+${prefix}topupff ID|JUMLAH DIAMOND
+Contoh:
+${prefix}topupff 123456789|1450
+
+NOTE: Pembelian Akan Diproses Oleh Sistem Otomatis Jika Saldo User Anda Terisi Dan Diamond Yang Anda Beli Akan Segera Masuk 3-5 Menit Proses.`
+m.reply(lisnya)
+break
+case 'listdmml':
+lisya = `*── 「 DIAMOND MOBILE LEGENDS 」 ──*
+
+_》${listml.ml.UPMBL5.nama} : ${listml.ml.UPMBL5.harga}_
+_》${listml.ml.UPMBL12.nama} : ${listml.ml.UPMBL12.harga}_
+_》${listml.ml.UPMBL19.nama} : ${listml.ml.UPMBL19.harga}_
+_》${listml.ml.UPMBL28.nama} : ${listml.ml.UPMBL28.harga}_
+_》${listml.ml.UPMBL36.nama} : ${listml.ml.UPMBL36.harga}_
+_》${listml.ml.UPMBL44.nama} : ${listml.ml.UPMBL44.harga}_
+_》${listml.ml.UPMBL59.nama} : ${listml.ml.UPMBL59.harga}_
+_》${listml.ml.UPMBL74.nama} : ${listml.ml.UPMBL74.harga}_
+_》${listml.ml.UPMBL85.nama} : ${listml.ml.UPMBL85.harga}_
+_》${listml.ml.UPMBL170.nama} : ${listml.ml.UPMBL170.harga}_
+_》${listml.ml.UPMBL185.nama} : ${listml.ml.UPMBL185.harga}_
+_》${listml.ml.UPMBL222.nama} : ${listml.ml.UPMBL222.harga}_
+_》${listml.ml.UPMBL240.nama} : ${listml.ml.UPMBL240.harga}_
+_》${listml.ml.UPMBL296.nama} : ${listml.ml.UPMBL296.harga}_
+_》${listml.ml.UPMBL370.nama} : ${listml.ml.UPMBL370.harga}_
+_》${listml.ml.UPMBL408.nama} : ${listml.ml.UPMBL408.harga}_
+_》${listml.ml.UPMBL568.nama} : ${listml.ml.UPMBL568.harga}_
+_》${listml.ml.UPMBL875.nama} : ${listml.ml.UPMBL875.harga}_
+_》${listml.ml.UPMBL1159.nama} : ${listml.ml.UPMBL1159.harga}_
+_》${listml.ml.UPMBL2010.nama} : ${listml.ml.UPMBL2010.harga}_
+_》${listml.ml.UPMBL4830.nama} : ${listml.ml.UPMBL4830.harga}_
+
+Cara Pembelian:
+${prefix}topupml ID|SERVER|JUMLAH DIAMOND
+Contoh:
+${prefix}topupml 123456789|1450|74
+
+NOTE: Pembelian Akan Diproses Oleh Sistem Otomatis Jika Saldo User Anda Terisi Dan Diamond Yang Anda Beli Akan Segera Masuk 3-5 Menit Proses.`
+m.reply(lisya)
+break
+case 'listdmml2':
+lisya = `*── 「 DIAMOND MOBILE LEGENDS 」 ──*
+
+_》${listmlbb.ml.ZIDMBL17.nama} : ${listmlbb.ml.ZIDMBL17.harga}_
+_》${listmlbb.ml.ZIDMBL34.nama} : ${listmlbb.ml.ZIDMBL34.harga}_
+_》${listmlbb.ml.ZIDMBL50.nama} : ${listmlbb.ml.ZIDMBL50.harga}_
+_》${listmlbb.ml.ZIDMBL66.nama} : ${listmlbb.ml.ZIDMBL66.harga}_
+_》${listmlbb.ml.ZIDMBL74.nama} : ${listmlbb.ml.ZIDMBL74.harga}_
+_》${listmlbb.ml.ZIDMBL83.nama} : ${listmlbb.ml.ZIDMBL83.harga}_
+_》${listmlbb.ml.ZIDMBL184.nama} : ${listmlbb.ml.ZIDMBL184.harga}_
+_》${listmlbb.ml.ZIDMBL366.nama} : ${listmlbb.ml.ZIDMBL366.harga}_
+_》${listmlbb.ml.ZIDMBL758.nama} : ${listmlbb.ml.ZIDMBL758.harga}_
+
+Cara Pembelian:
+${prefix}topupml2 ID|SERVER|JUMLAH DIAMOND
+Contoh:
+${prefix}topupml2 123456789|1450|85
+
+NOTE: Pembelian Akan Diproses Oleh Sistem Otomatis Jika Saldo User Anda Terisi Dan Diamond Yang Anda Beli Akan Segera Masuk 3-5 Menit Proses.`
+m.reply(lisya)
+break
+case 'buypulsa':
+let dokid = text.split("|")[0]
+let cusid = text.split("|")[1]
+if (isNaN(parseInt(cusid))) return m.reply('Nomor Hp Harus Berupa Angka!')
+
+let anuni = await fetchJson(`https://trendtoday.my.id/api/transaction?username=manik729828YWOD&apikey=lq7ae3b7j6n0wgrz5arcqdh0c5o7cx&product=pulsa&nominal=${dokid}&id_costumer=${cusid}`)
+let suksess = `*─ 「 LANJUTKAN PEMBAYARAN 」 ─*
+                
+_Silahkan Scan Qris Dan Transfer Sesuai Harga:_
+_》Harga : Rp${anuni.amount}_
+_》Provider : ${anuni.provider}_
+_》Nomor : ${cusid} ( Pulsa )_
+_》Code Trx : ${anuni.transaction_id}_
+
+_Qr Scan Berlaku 5 Menit, Setelah 5 Menit Pesan Ini Akan Dihapus!._  
+
+_Note: Pulsa Akan Otomatis Masuk Setelah Pembayaran Berhasil._`
+let inina = await liaacans.sendMessage(m.chat, { image: { url: anuni.qr_payment }, caption: `${suksess}` }, { quoted: m })
+setTimeout(() => {
+liaacans.sendMessage(m.chat, { delete:inina.key })
+}, 500000)
+break
+case prefix+'mls':{
+if (!isCreator) reply('Fitur Topup Smile One Khusus Owner, Silahkan Melakukan Transaksi Dengan Owner!')
+let prodc = text.split("|")[0]
+let prodc2 = text.split("|")[1]
+let prodcid = text.split("|")[2]
+let prodcnya = `${prodc}${prodc2}`
+let refer = randomNomor(001, 1000)
+if (isNaN(parseInt(prodc))) return m.reply(`Id Harus Berupa Angka!\n\nContoh: ${prefix}mlsmile 23456789|2848|9288`)
+if (isNaN(parseInt(prodcid))) return m.reply('Jumlah Harus Berupa Angka!')
+let data = await fetchJson(`https://api.lolhuman.xyz/api/mobilelegend/${prodc}/${prodc2}?apikey=Imanmpa`)
+let buttons = [{ buttonId: `mlsy ${prodc}|${prodc2}|${prodcid}`, buttonText: { displayText: 'Lanjutkan' }, type: 1 },]
+if(`${data.status}` == 200) {
+liaacans.sendButtonText(m.chat, buttons, `*── 「 CHECK ID OTOMATIS 」 ──*
+
+_Silahkan Cek Data Berikut Ini:_
+_》Id Game : ${prodc} (${prodc2})_
+_》NickName : ${data.result}_
+_》Nama Item : ${prodcid} Diamond ( Mlbb )_
+
+Jika Data Sudah Benar Silahkan Klik Lanjutkan Dan Jika Data Salah Silahkan Mengetik Ulang Transaksi Anda!.`, liaacans.user.name, m)
+} else if(`${data.status}` !== 200) {
+m.reply('Invalid id/Error')
+	}
+break
+}
+case 'mlsy':{
+if (!isCreator) reply('Fitur Topup Smile One Khusus Owner, Silahkan Melakukan Transaksi Dengan Owner!')
+let prodc = text.split("|")[0]
+let prodc2 = text.split("|")[1]
+let prodcid = text.split("|")[2]
+let prodcnya = `${prodc}${prodc2}`
+let refer = randomNomor(001, 1000)
+const axios = require('axios')
+if (isNaN(parseInt(prodc))) return m.reply('Id Harus Berupa Angka!')
+if (isNaN(parseInt(prodcid))) return m.reply('Jumlah Harus Berupa Angka!')
+var config = {
+  method: 'get',
+  url: `https://v1.apigames.id/transaksi/http-get-v1?merchant=${global.merchant}&secret=${global.secret}&produk=ML${prodcid}&tujuan=${prodcnya}&ref=${refer}`,
+  headers: { }
+};
+
+axios(config)
+.then(function (response) {
+let workid = `*── 「 TOPUP SUKSES 」 ──*\n\n_》Harga : Rp${response.data.data.product_detail.price_rp}_\n_》NickName : ${response.data.data.sn}_\n_》Nama Item : ${prodcid} Diamond ( Mlbb )_\n_》Trx Id : ${response.data.data.trx_id}_\n\n_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala Pada Game Anda._\n\nNote: Jika Ada Kesalahan Id Atau NickName Bukan Tanggung Jawab Owner!.`
+let workd = `*── 「 TOPUP GAGAL 」 ──*
+
+Transaksi Anda Gagal, Saldo Sistem Belum terisi, Harap Tunggu Saldo Sistem Reset Setiap 6 Jam Sekali!.`
+if(response.data.data.status == "Sukses"){
+	reply(workid)
+} else if(response.data.data.status == "Gagal"){
+m.reply(workd)
+}
+})
+break
+} 
+case 'mlsmile':
+if (!isCreator) reply('Fitur Topup Smile One Khusus Owner, Silahkan Melakukan Transaksi Dengan Owner!')
+let prodc = text.split("|")[0]
+let prodc2 = text.split("|")[1]
+let prodcid = text.split("|")[2]
+let prodcnya = `${prodc}${prodc2}`
+let refer = randomNomor(001, 1000)
+if (isNaN(parseInt(prodc))) return m.reply(`Id Harus Berupa Angka!\n\nContoh: ${prefix}mlsmile 23456789|2848|9288`)
+if (isNaN(parseInt(prodcid))) return m.reply('Jumlah Harus Berupa Angka!')
+var axios = require('axios');
+var config = {
+  method: 'get',
+  url: `https://v1.apigames.id/merchant/${global.merchant}/cek-username/mobilelegend?user_id=${prodcnya}&signature=${global.signature}`,
+  headers: { }
+};
+
+axios(config)
+.then(function (response) {
+let buttons = [
+{ buttonId: `mlsmiley ${prodc}|${prodc2}|${prodcid}`, buttonText: { displayText: 'Lanjutkan' }, type: 1 },
+]
+if (response.data.error_msg) {
+m.reply('Invalid Id Or Zone')
+}else if (response.data.message) {
+liaacans.sendButtonText(m.chat, buttons, `*── 「 CHECK ID OTOMATIS 」 ──*
+
+_Silahkan Cek Data Berikut Ini:_
+_》Id Game : ${prodc} (${prodc2})_
+_》NickName : ${response.data.data.username}_
+_》Nama Item : ${prodcid} Diamond ( Mlbb )_
+
+Jika Data Sudah Benar Silahkan Klik Lanjutkan Dan Jika Data Salah Silahkan Mengetik Ulang Transaksi Anda!.`, liaacans.user.name, m)
+} 
+})
+.catch(function (error) {
+  m.reply(error);
+});
+break
+case 'mlsmiley':{
+if (!isCreator) reply('Fitur Topup Smile One Khusus Owner, Silahkan Melakukan Transaksi Dengan Owner!')
+let prodc = text.split("|")[0]
+let prodc2 = text.split("|")[1]
+let prodcid = text.split("|")[2]
+let prodcnya = `${prodc}${prodc2}`
+let refer = randomNomor(001, 1000)
+const axios = require('axios')
+if (isNaN(parseInt(prodc))) return m.reply('Id Harus Berupa Angka!')
+if (isNaN(parseInt(prodcid))) return m.reply('Jumlah Harus Berupa Angka!')
+var config = {
+  method: 'get',
+  url: `https://v1.apigames.id/transaksi/http-get-v1?merchant=${global.merchant}&secret=${global.secret}&produk=ML${prodcid}&tujuan=${prodcnya}&ref=${refer}`,
+  headers: { }
+};
+
+axios(config)
+.then(function (response) {
+let workid = `*── 「 TOPUP SUKSES 」 ──*\n\n_》Harga : Rp${response.data.data.product_detail.price_rp}_\n_》NickName : ${response.data.data.sn}_\n_》Nama Item : ${prodcid} Diamond ( Mlbb )_\n_》Trx Id : ${response.data.data.trx_id}_\n\n_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala Pada Game Anda._\n\nNote: Jika Ada Kesalahan Id Atau NickName Bukan Tanggung Jawab Owner!.`
+let workd = `*── 「 TOPUP GAGAL 」 ──*
+
+Transaksi Anda Gagal, Saldo Sistem Belum terisi, Harap Tunggu Saldo Sistem Reset Setiap 6 Jam Sekali!.`
+if(response.data.data.status == "Sukses"){
+	m.reply(workid)
+} else if(response.data.data.status == "Gagal"){
+m.reply(workd)
+}
+})
+break
+}
+case 'topupff':{
+if (m.isGroup) return m.reply('Fitur Ini Hanya Bisa Digunakan Di Private Chat!')
+let idff = text.split("|")[0]
+let produkid = text.split("|")[1]
+if (isNaN(parseInt(idff))) return m.reply('Id Harus Berupa Angka!')
+if (isNaN(parseInt(produkid))) return m.reply('Jumlah Harus Berupa Angka!')
+let idharga = `FF${produkid}`
+if (idharga == "FF5"){
+global.hargadmff = 900
+}
+if (idharga == "FF10"){
+global.hargadmff = 1800
+}
+if (idharga == "FF15"){
+global.hargadmff = 2700
+}
+if (idharga == "FF20"){
+global.hargadmff = 3000
+}
+if (idharga == "FF25"){
+global.hargadmff = 3900
+}
+if (idharga == "FF30"){
+global.hargadmff = 4800
+}
+if (idharga == "FF40"){
+global.hargadmff = 6000
+}
+if (idharga == "FF50"){
+global.hargadmff = 7200
+}
+if (idharga == "FF55"){
+global.hargadmff = 8100
+}
+if (idharga == "FF60"){
+global.hargadmff = 9000
+}
+if (idharga == "FF70"){
+global.hargadmff = 9900
+}
+if (idharga == "FF75"){
+global.hargadmff = 10800
+}
+if (idharga == "FF80"){	
+global.hargadmff =11700
+}
+if (idharga == "FF90"){	
+global.hargadmff =12900
+}
+if (idharga == "FF95"){	
+global.hargadmff =13800
+}	
+if (idharga == "FF100"){	
+global.hargadmff = 14400
+}
+if (idharga == "FF120"){	
+global.hargadmff =17100
+}
+if (idharga == "FF130"){	
+global.hargadmff =18900
+}
+if (idharga == "FF140"){	
+global.hargadmff =19800
+}	
+if (idharga == "FF145"){	
+global.hargadmff =20700
+}
+if (idharga == "FF150"){	
+global.hargadmff =21600
+}
+if (idharga == "FF160"){	
+global.hargadmff =22800
+}
+if (idharga == "FF180"){	
+global.hargadmff =25800
+}
+if (idharga == "FF190"){	
+global.hargadmff =27000
+}
+if (idharga == "FF200"){	
+global.hargadmff =28800
+}
+if (idharga == "FF210"){	
+global.hargadmff =29700
+}
+if (idharga == "FFM"){
+global.hargadmff =30000
+}
+if (idharga == "FF250"){	
+global.hargadmff =35700
+}
+if (idharga == "FF280"){	
+global.hargadmff =39600
+}
+if (idharga == "FF300"){	
+global.hargadmff =42600
+}
+if (idharga == "FF355"){	
+global.hargadmff =49900
+}
+if (idharga == "FF350"){	
+global.hargadmff =49500
+}
+if (idharga == "FF375"){	
+global.hargadmff =52500
+}
+if (idharga == "FF400"){	
+global.hargadmff =56400
+}
+if (idharga == "FF405"){	
+global.hargadmff =56700
+}
+if (idharga == "FF425"){	
+global.hargadmff =59400
+}
+if (idharga == "FF475"){	
+global.hargadmff =66600
+}
+if (idharga == "FF500"){	
+global.hargadmff =70200
+}
+if (idharga == "FF510"){	
+global.hargadmff = 72000
+}
+if (idharga == "FF515"){	
+global.hargadmff = 72300
+}
+
+if (idharga == "FF512"){
+global.hargadmff =72300
+}
+if (idharga == "FF545"){	
+global.hargadmff =76500
+}
+if (idharga == "FF565"){	
+global.hargadmff =79200
+}	
+if (idharga == "FF600"){	
+global.hargadmff =84600
+}
+if (idharga == "FF635"){	
+global.hargadmff = 89100
+}
+if (idharga == "FF645"){	
+global.hargadmff =90900
+}
+if (idharga == "FF655"){	
+global.hargadmff =92100
+}
+if (idharga == "FF720"){	
+global.hargadmff = 99000
+}
+if (idharga == "FF700"){	
+global.hargadmff =99000
+}
+if (idharga == "FF770"){	
+global.hargadmff =106200
+}	
+if (idharga == "FF790"){	
+global.hargadmff = 108900
+}
+if (idharga == "FF800"){	
+global.hargadmff = 110700
+}
+if (idharga == "FF860"){	
+global.hargadmff = 118800
+}
+if (idharga == "FF930"){	
+global.hargadmff =128700
+}
+if (idharga == "FF1000"){	
+global.hargadmff =138600
+}	
+if (idharga == "FF1050"){	
+global.hargadmff =145800
+}
+if (idharga == "FF1075"){	
+global.hargadmff =148500
+}
+if (idharga == "FF1080"){	
+global.hargadmff =149400
+}
+if (idharga == "FFB"){
+global.hargadmff =150000
+}
+if (idharga == "FF1200"){	
+global.hargadmff =166800
+}
+if (idharga == "FF1215"){	
+global.hargadmff =16830
+}
+if (idharga == "FF1300"){	
+global.hargadmff =180900
+}
+if (idharga == "FF1440"){	
+global.hargadmff =198000
+}
+if (idharga == "FF1450"){	
+global.hargadmff =199800
+}
+if (idharga == "FF1490"){	
+global.hargadmff =205200
+}
+if (idharga == "FF1510"){	
+global.hargadmff =207900
+}
+if (idharga == "FF1580"){	
+global.hargadmff =217800
+}
+if (idharga == "FF1795"){	
+global.hargadmff =247500
+}
+if (idharga == "FF1800"){	
+global.hargadmff = 248400
+}
+if (idharga == "FF2000"){	
+global.hargadmff =270000
+}
+if (idharga == "FF2140"){	
+global.hargadmff = 289800
+}
+if (idharga == "FF2190"){	
+global.hargadmff = 297000
+}
+if (idharga == "FF2210"){	
+global.hargadmff = 299700
+}
+if (idharga == "FF2280"){	
+global.hargadmff = 309600
+}
+if (idharga == "FF2355"){	
+global.hargadmff = 319500
+}
+if (idharga == "FF2720"){	
+global.hargadmff = 369000
+}
+if (idharga == "FF4000"){
+global.hargadmff = 540000
+}
+if (idharga == "FF77290"){
+global.hargadmff = 990000
+}
+
+var axios = require('axios');
+
+var config = {
+  method: 'get',
+  url: `https://v1.apigames.id/merchant/${global.merchant}/cek-username/freefire?user_id=${idff}&signature=${global.signature}`,
+  headers: { }
+};
+
+axios(config)
+.then(function (response) {
+let buttons = [
+{ buttonId: `topupffyes ${idff}|${produkid}`, buttonText: { displayText: 'Lanjutkan' }, type: 1 },
+]
+if (response.data.error_msg) {
+m.reply('Invalid Id')
+} else if(response.data.message) {
+liaacans.sendButtonText(m.chat, buttons, `*── 「 CHECK ID OTOMATIS 」 ──*
+                
+_Silahkan Cek Data Berikut Ini:_
+_》Id Game : ${idff}_
+_》NickName : ${response.data.data.username}_
+_》Nama Item : ${produkid} Diamond ( FreeFire )_
+
+Jika Data Sudah Benar Silahkan Klik Lanjutkan Dan Jika Data Salah Silahkan Mengetik Ulang Transaksi Anda!.`, liaacans.user.name, m)
+} 
+})
+.catch(function (error) {
+  console.log(error);
+});
+break
+}
+case 'topupffyes':{
+if (m.isGroup) return m.reply('Fitur Ini Hanya Bisa Digunakan Di Private Chat!')
+let idff = text.split("|")[0]
+let produkid = text.split("|")[1]
+let refdi = randomNomor(001, 1000)
+let refid = `${refdi}`
+let idharga = `FF${produkid}`
+var axios = require('axios');
+var config = {
+  method: 'get',
+  url: `https://v1.apigames.id/transaksi/http-get-v1?merchant=${global.merchant}&secret=${global.secret}&produk=FF${produkid}&tujuan=${idff}&ref=TRX${refid}`,
+  headers: { }
+};
+
+axios(config)
+.then(function (response) {
+let idharga = `FF${produkid}`
+if (idharga == "FF5"){
+global.hargadmff = 900
+}
+if (idharga == "FF10"){
+global.hargadmff = 1800
+}
+if (idharga == "FF15"){
+global.hargadmff = 2700
+}
+if (idharga == "FF20"){
+global.hargadmff = 3000
+}
+if (idharga == "FF25"){
+global.hargadmff = 3900
+}
+if (idharga == "FF30"){
+global.hargadmff = 4800
+}
+if (idharga == "FF40"){
+global.hargadmff = 6000
+}
+if (idharga == "FF50"){
+global.hargadmff = 7200
+}
+if (idharga == "FF55"){
+global.hargadmff = 8100
+}
+if (idharga == "FF60"){
+global.hargadmff = 9000
+}
+if (idharga == "FF70"){
+global.hargadmff = 9900
+}
+if (idharga == "FF75"){
+global.hargadmff = 10800
+}
+if (idharga == "FF80"){	
+global.hargadmff =11700
+}
+if (idharga == "FF90"){	
+global.hargadmff =12900
+}
+if (idharga == "FF95"){	
+global.hargadmff =13800
+}	
+if (idharga == "FF100"){	
+global.hargadmff = 14400
+}
+if (idharga == "FF120"){	
+global.hargadmff =17100
+}
+if (idharga == "FF130"){	
+global.hargadmff =18900
+}
+if (idharga == "FF140"){	
+global.hargadmff =19800
+}	
+if (idharga == "FF145"){	
+global.hargadmff =20700
+}
+if (idharga == "FF150"){	
+global.hargadmff =21600
+}
+if (idharga == "FF160"){	
+global.hargadmff =22800
+}
+if (idharga == "FF180"){	
+global.hargadmff =25800
+}
+if (idharga == "FF190"){	
+global.hargadmff =27000
+}
+if (idharga == "FF200"){	
+global.hargadmff =28800
+}
+if (idharga == "FF210"){	
+global.hargadmff =29700
+}
+if (idharga == "FFM"){
+global.hargadmff =30000
+}
+if (idharga == "FF250"){	
+global.hargadmff =35700
+}
+if (idharga == "FF280"){	
+global.hargadmff =39600
+}
+if (idharga == "FF300"){	
+global.hargadmff =42600
+}
+if (idharga == "FF355"){	
+global.hargadmff =49900
+}
+if (idharga == "FF350"){	
+global.hargadmff =49500
+}
+if (idharga == "FF375"){	
+global.hargadmff =52500
+}
+if (idharga == "FF400"){	
+global.hargadmff =56400
+}
+if (idharga == "FF405"){	
+global.hargadmff =56700
+}
+if (idharga == "FF425"){	
+global.hargadmff =59400
+}
+if (idharga == "FF475"){	
+global.hargadmff =66600
+}
+if (idharga == "FF500"){	
+global.hargadmff =70200
+}
+if (idharga == "FF510"){	
+global.hargadmff = 72000
+}
+if (idharga == "FF515"){	
+global.hargadmff = 72300
+}
+
+if (idharga == "FF512"){
+global.hargadmff =72300
+}
+if (idharga == "FF545"){	
+global.hargadmff =76500
+}
+if (idharga == "FF565"){	
+global.hargadmff =79200
+}	
+if (idharga == "FF600"){	
+global.hargadmff =84600
+}
+if (idharga == "FF635"){	
+global.hargadmff = 89100
+}
+if (idharga == "FF645"){	
+global.hargadmff =90900
+}
+if (idharga == "FF655"){	
+global.hargadmff =92100
+}
+if (idharga == "FF720"){	
+global.hargadmff = 99000
+}
+if (idharga == "FF700"){	
+global.hargadmff =99000
+}
+if (idharga == "FF770"){	
+global.hargadmff =106200
+}	
+if (idharga == "FF790"){	
+global.hargadmff = 108900
+}
+if (idharga == "FF800"){	
+global.hargadmff = 110700
+}
+if (idharga == "FF860"){	
+global.hargadmff = 118800
+}
+if (idharga == "FF930"){	
+global.hargadmff =128700
+}
+if (idharga == "FF1000"){	
+global.hargadmff =138600
+}	
+if (idharga == "FF1050"){	
+global.hargadmff =145800
+}
+if (idharga == "FF1075"){	
+global.hargadmff =148500
+}
+if (idharga == "FF1080"){	
+global.hargadmff =149400
+}
+if (idharga == "FFB"){
+global.hargadmff =150000
+}
+if (idharga == "FF1200"){	
+global.hargadmff =166800
+}
+if (idharga == "FF1215"){	
+global.hargadmff =16830
+}
+if (idharga == "FF1300"){	
+global.hargadmff =180900
+}
+if (idharga == "FF1440"){	
+global.hargadmff =198000
+}
+if (idharga == "FF1450"){	
+global.hargadmff =199800
+}
+if (idharga == "FF1490"){	
+global.hargadmff =205200
+}
+if (idharga == "FF1510"){	
+global.hargadmff =207900
+}
+if (idharga == "FF1580"){	
+global.hargadmff =217800
+}
+if (idharga == "FF1795"){	
+global.hargadmff =247500
+}
+if (idharga == "FF1800"){	
+global.hargadmff = 248400
+}
+if (idharga == "FF2000"){	
+global.hargadmff =270000
+}
+if (idharga == "FF2140"){	
+global.hargadmff = 289800
+}
+if (idharga == "FF2190"){	
+global.hargadmff = 297000
+}
+if (idharga == "FF2210"){	
+global.hargadmff = 299700
+}
+if (idharga == "FF2280"){	
+global.hargadmff = 309600
+}
+if (idharga == "FF2355"){	
+global.hargadmff = 319500
+}
+if (idharga == "FF2720"){	
+global.hargadmff = 369000
+}
+if (idharga == "FF4000"){
+global.hargadmff = 540000
+}
+if (idharga == "FF77290"){
+global.hargadmff = 990000
+}
+let workid = `*── 「 TOPUP SUKSES 」 ──*\n\n_》Harga : Rp${global.hargadmff}_\n_》NickName : ${response.data.data.sn}_\n_》Nama Item : ${produkid} Diamond ( FreeFire )_\n_》Trx Id : ${response.data.data.trx_id}_\n\n_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala Pada Game Anda.\n\nNote: Jika Ada Kesalahan Id Atau NickName Bukan Tanggung Jawab Owner!.`
+let workd = `*── 「 TOPUP GAGAL 」 ──*
+
+Transaksi Anda Gagal, Saldo Sistem Belum terisi Saldo User Anda Tidak Akan Dipotong, Harap Tumggu Saldo Sistem Reset Setiap 6 Jam Sekali!.`
+if(response.data.data.status == "Sukses"){
+if (idharga == "FF5"){
+moneyAdd(m.sender, 900)
+m.reply(workid)
+}
+if (idharga == "FF10"){
+moneyAdd(m.sender, 1800)
+m.reply(workid)
+}
+if (idharga == "FF15"){
+moneyAdd(m.sender, 2700)
+m.reply(workid)
+}
+if (idharga == "FF20"){
+moneyAdd(m.sender, 3000)
+m.reply(workid)
+}
+if (idharga == "FF25"){
+moneyAdd(m.sender, 3900)
+m.reply(workid)
+}
+if (idharga == "FF30"){
+moneyAdd(m.sender, 4800)
+m.reply(workid)
+}
+if (idharga == "FF40"){
+moneyAdd(m.sender, 6000)
+m.reply(workid)
+}
+if (idharga == "FF50"){
+moneyAdd(m.sender, 7200)
+m.reply(workid)
+}
+if (idharga == "FF55"){
+moneyAdd(m.sender, 8100)
+m.reply(workid)
+}
+if (idharga == "FF60"){
+moneyAdd(m.sender, 9000)
+m.reply(workid)
+}
+if (idharga == "FF70"){
+moneyAdd(m.sender, 9900)
+m.reply(workid)
+}
+if (idharga == "FF75"){
+moneyAdd(m.sender, 10800)
+m.reply(workid)
+}
+if (idharga == "FF80"){	
+moneyAdd(m.sender,11700)
+m.reply(workid)
+}
+if (idharga == "FF90"){	
+moneyAdd(m.sender,12900)
+m.reply(workid)
+}
+if (idharga == "FF95"){	
+moneyAdd(m.sender,13800)
+m.reply(workid)
+}	
+if (idharga == "FF100"){	
+moneyAdd(m.sender, 14400)
+m.reply(workid)
+}
+if (idharga == "FF120"){	
+moneyAdd(m.sender,17100)
+m.reply(workid)
+}
+if (idharga == "FF130"){	
+moneyAdd(m.sender,18900)
+m.reply(workid)
+}
+if (idharga == "FF140"){	
+moneyAdd(m.sender,19800)
+m.reply(workid)
+}	
+if (idharga == "FF145"){	
+moneyAdd(m.sender,20700)
+m.reply(workid)
+}
+if (idharga == "FF150"){	
+moneyAdd(m.sender,21600)
+m.reply(workid)
+}
+if (idharga == "FF160"){	
+moneyAdd(m.sender,22800)
+m.reply(workid)
+}
+if (idharga == "FF180"){	
+moneyAdd(m.sender,25800)
+m.reply(workid)
+}
+if (idharga == "FF190"){	
+moneyAdd(m.sender,27000)
+m.reply(workid)
+}
+if (idharga == "FF200"){	
+moneyAdd(m.sender,28800)
+m.reply(workid)
+}
+if (idharga == "FF210"){	
+moneyAdd(m.sender,29700)
+m.reply(workid)
+}
+if (idharga == "FFM"){
+moneyAdd(m.sender,30000)
+m.reply(workid)
+}
+if (idharga == "FF250"){	
+moneyAdd(m.sender,35700)
+m.reply(workid)
+}
+if (idharga == "FF280"){	
+moneyAdd(m.sender,39600)
+m.reply(workid)
+}
+if (idharga == "FF300"){	
+moneyAdd(m.sender,42600)
+m.reply(workid)
+}
+if (idharga == "FF355"){	
+moneyAdd(m.sender,49900)
+m.reply(workid)
+}
+if (idharga == "FF350"){	
+moneyAdd(m.sender,49500)
+m.reply(workid)
+}
+if (idharga == "FF375"){	
+moneyAdd(m.sender,52500)
+m.reply(workid)
+}
+if (idharga == "FF400"){	
+moneyAdd(m.sender,56400)
+m.reply(workid)
+}
+if (idharga == "FF405"){	
+moneyAdd(m.sender,56700)
+m.reply(workid)
+}
+if (idharga == "FF425"){	
+moneyAdd(m.sender,59400)
+m.reply(workid)
+}
+if (idharga == "FF475"){	
+moneyAdd(m.sender,66600)
+m.reply(workid)
+}
+if (idharga == "FF500"){	
+moneyAdd(m.sender,70200)
+m.reply(workid)
+}
+if (idharga == "FF510"){	
+moneyAdd(m.sender, 72000)
+m.reply(workid)
+}
+if (idharga == "FF515"){	
+moneyAdd(m.sender, 72300)
+m.reply(workid)
+}
+
+if (idharga == "FF512"){
+moneyAdd(m.sender,72300)
+m.reply(workid)
+}
+if (idharga == "FF545"){	
+moneyAdd(m.sender,76500)
+m.reply(workid)
+}
+if (idharga == "FF565"){	
+moneyAdd(m.sender,79200)
+m.reply(workid)
+}	
+if (idharga == "FF600"){	
+moneyAdd(m.sender,84600)
+m.reply(workid)
+}
+if (idharga == "FF635"){	
+moneyAdd(m.sender, 89100)
+m.reply(workid)
+}
+if (idharga == "FF645"){	
+moneyAdd(m.sender,90900)
+m.reply(workid)
+}
+if (idharga == "FF655"){	
+moneyAdd(m.sender,92100)
+m.reply(workid)
+}
+if (idharga == "FF720"){	
+moneyAdd(m.sender, 99000)
+m.reply(workid)
+}
+if (idharga == "FF700"){	
+moneyAdd(m.sender,99000)
+m.reply(workid)
+}
+if (idharga == "FF770"){	
+moneyAdd(m.sender,106200)
+m.reply(workid)
+}	
+if (idharga == "FF790"){	
+moneyAdd(m.sender, 108900)
+m.reply(workid)
+}
+if (idharga == "FF800"){	
+moneyAdd(m.sender, 110700)
+m.reply(workid)
+}
+if (idharga == "FF860"){	
+moneyAdd(m.sender, 118800)
+m.reply(workid)
+}
+if (idharga == "FF930"){	
+moneyAdd(m.sender,128700)
+m.reply(workid)
+}
+if (idharga == "FF1000"){	
+moneyAdd(m.sender,138600)
+m.reply(workid)
+}	
+if (idharga == "FF1050"){	
+moneyAdd(m.sender,145800)
+m.reply(workid)
+}
+if (idharga == "FF1075"){	
+moneyAdd(m.sender,148500)
+m.reply(workid)
+}
+if (idharga == "FF1080"){	
+moneyAdd(m.sender,149400)
+m.reply(workid)
+}
+if (idharga == "FFB"){
+moneyAdd(m.sender,150000)
+m.reply(workid)
+}
+if (idharga == "FF1200"){	
+moneyAdd(m.sender,166800)
+m.reply(workid)
+}
+if (idharga == "FF1215"){	
+moneyAdd(m.sender,16830)
+m.reply(workid)
+}
+if (idharga == "FF1300"){	
+moneyAdd(m.sender,180900)
+m.reply(workid)
+}
+if (idharga == "FF1440"){	
+moneyAdd(m.sender,198000)
+m.reply(workid)
+}
+if (idharga == "FF1450"){	
+moneyAdd(m.sender,199800)
+m.reply(workid)
+}
+if (idharga == "FF1490"){	
+moneyAdd(m.sender,205200)
+m.reply(workid)
+}
+if (idharga == "FF1510"){	
+moneyAdd(m.sender,207900)
+m.reply(workid)
+}
+if (idharga == "FF1580"){	
+moneyAdd(m.sender,217800)
+m.reply(workid)
+}
+if (idharga == "FF1795"){	
+moneyAdd(m.sender,247500)
+m.reply(workid)
+}
+if (idharga == "FF1800"){	
+moneyAdd(m.sender, 248400)
+m.reply(workid)
+}
+if (idharga == "FF2000"){	
+moneyAdd(m.sender,270000)
+m.reply(workid)
+}
+if (idharga == "FF2140"){	
+moneyAdd(m.sender, 289800)
+m.reply(workid)
+}
+if (idharga == "FF2190"){	
+moneyAdd(m.sender, 297000)
+m.reply(workid)
+}
+if (idharga == "FF2210"){	
+moneyAdd(m.sender, 299700)
+m.reply(workid)
+}
+if (idharga == "FF2280"){	
+moneyAdd(m.sender, 309600)
+m.reply(workid)
+}
+if (idharga == "FF2355"){	
+moneyAdd(m.sender, 319500)
+m.reply(workid)
+}
+if (idharga == "FF2720"){	
+moneyAdd(m.sender, 369000)
+m.reply(workid)
+}
+if (idharga == "FF4000"){
+moneyAdd(m.sender, 540000)
+m.reply(workid)
+}
+if (idharga == "FF77290"){
+moneyAdd(m.sender, 990000)
+m.reply(workid)
+}
+} else if(response.data.data.status == "Gagal"){
+m.reply(workd)
+}
+})
+break
+}
+case 'topupml':{
+if (m.isGroup) return m.reply('Fitur Ini Hanya Bisa Digunakan Di Private Chat!')
+let idml1 = text.split("|")[0]
+let idml2 = text.split("|")[1]
+let idml = `${idml1}${idml2}`
+let produkid = text.split("|")[2]
+if (isNaN(parseInt(produkid))) return m.reply('Jumlah Harus Berupa Angka!')
+if (isNaN(parseInt(idml1))) return m.reply('Id Harus Berupa Angka!')
+if (isNaN(parseInt(idml2))) return m.reply('Server Harus Berupa Angka!')
+let idharga = `UPMBL${produkid}`
+if (idharga == "UPMBL5"){
+global.hargadmml = 1700
+}
+if (idharga == "UPMBL12"){
+global.hargadmml = 4000
+}
+if (idharga == "ZIDMBL17"){
+global.hargadmml = 4500
+}
+if (idharga == "UPMBL19"){
+global.hargadmml = 7000
+}
+if (idharga == "UPMBL28"){
+global.hargadmml = 13000
+}
+if (idharga == "UPMBL36"){
+global.hargadmml = 21000
+}
+if (idharga == "UPMBL44"){
+global.hargadmml = 15000
+}
+if (idharga == "UPMBL59"){
+global.hargadmml = 18500
+    }
+if (idharga == "UPMBL74"){
+global.hargadmml = 22500
+    }
+if (idharga == "UPMBL85"){
+global.hargadmml = 26500
+    }
+if (idharga == "UPMBL170"){
+global.hargadmml = 51500
+    }
+if (idharga == "UPMBL185"){
+global.hargadmml = 56500
+    }
+if (idharga == "UPMBL222"){
+global.hargadmml = 67500
+    }
+if (idharga == "UPMBL240"){
+global.hargadmml = 72500
+    }
+if (idharga == "UPMBL296"){
+global.hargadmml = 89500
+    }
+if (idharga == "UPMBL370"){
+global.hargadmml = 111500
+    }
+if (idharga == "UPMBL408"){
+global.hargadmml = 123500
+    }
+if (idharga == "UPMBL568"){
+global.hargadmml = 167500
+    }
+if (idharga == "UPMBL875"){
+global.hargadmml = 256500
+    }
+if (idharga == "UPMBL1159"){
+global.hargadmml = 333500
+    }
+if (idharga == "UPMBL2010"){
+global.hargadmml = 555.500
+    }
+if (idharga == "UPMBL4830"){
+global.hargadmml = 1322500
+    }
+var axios = require('axios');
+var config = {
+  method: 'get',
+  url: `https://v1.apigames.id/merchant/${global.merchant}/cek-username/mobilelegend?user_id=${idml}&signature=${global.signature}`,
+  headers: { }
+};
+
+axios(config)
+.then(function (response) {
+let buttons = [
+{ buttonId: `topupmlyes ${idml1}|${idml2}|${produkid}`, buttonText: { displayText: 'Lanjutkan' }, type: 1 },
+]
+if (response.data.error_msg) {
+reply('Invalid Id Or Zone')
+}else if (response.data.message) {
+liaacans.sendButtonText(m.chat, buttons, `*── 「 CHECK ID OTOMATIS 」 ──*
+
+_Silahkan Cek Data Berikut Ini:_
+_》Id Game : ${idml1} (${idml2})_
+_》NickName : ${response.data.data.username}_
+_》Nama Item : ${produkid} Diamond ( Mlbb )_
+
+Jika Data Sudah Benar Silahkan Klik Lanjutkan Dan Jika Data Salah Silahkan Mengetik Ulang Transaksi Anda!.`, liaacans.user.name, m)
+} 
+})
+.catch(function (error) {
+  m.reply(error);
+});
+}
+break
+case 'topupmlyes':{
+if (m.isGroup) return mreply('Fitur Ini Hanya Bisa Digunakan Di Private Chat!')
+let idml1 = text.split("|")[0]
+let idml2 = text.split("|")[1]
+let idml =`${idml1}${idml2}`
+let produkid = `${text.split("|")[2]}`
+let refdi = randomNomor(001, 1000)
+let refid = `${refdi}`
+let idharga = `UPMBL${produkid}`
+var axios = require('axios');
+var config = {
+  method: 'get',
+  url: `https://v1.apigames.id/transaksi/http-get-v1?merchant=${global.merchant}&secret=${global.secret}&produk=${produkid}&tujuan=${idml}&ref=TRX${refid}`,
+  headers: { }
+};
+
+axios(config)
+.then(function (response) {
+if (idharga == "UPMBL5"){
+global.hargadmml = 1700
+}
+if (idharga == "UPMBL12"){
+global.hargadmml = 4000
+}
+if (idharga == "ZIDMBL17"){
+global.hargadmml = 4500
+}
+if (idharga == "UPMBL19"){
+global.hargadmml = 7000
+}
+if (idharga == "UPMBL28"){
+global.hargadmml = 13000
+}
+if (idharga == "UPMBL36"){
+global.hargadmml = 21000
+}
+if (idharga == "UPMBL44"){
+global.hargadmml = 15000
+}
+if (idharga == "UPMBL59"){
+global.hargadmml = 18500
+    }
+if (idharga == "UPMBL74"){
+global.hargadmml = 22500
+    }
+if (idharga == "UPMBL85"){
+global.hargadmml = 26500
+    }
+if (idharga == "UPMBL170"){
+global.hargadmml = 51500
+    }
+if (idharga == "UPMBL185"){
+global.hargadmml = 56500
+    }
+if (idharga == "UPMBL222"){
+global.hargadmml = 67500
+    }
+if (idharga == "UPMBL240"){
+global.hargadmml = 72500
+    }
+if (idharga == "UPMBL296"){
+global.hargadmml = 89500
+    }
+if (idharga == "UPMBL370"){
+global.hargadmml = 111500
+    }
+if (idharga == "UPMBL408"){
+global.hargadmml = 123500
+    }
+if (idharga == "UPMBL568"){
+global.hargadmml = 167500
+    }
+if (idharga == "UPMBL875"){
+global.hargadmml = 256500
+    }
+if (idharga == "UPMBL1159"){
+global.hargadmml = 333500
+    }
+if (idharga == "UPMBL2010"){
+global.hargadmml = 555.500
+    }
+if (idharga == "UPMBL4830"){
+global.hargadmml = 1322500
+    }
+let workid = `*── 「 TOPUP SUKSES 」 ──*\n\n_》Harga : Rp${global.hargadmml}_\n_》NickName : ${response.data.data.sn}_\n_》Nama Item : ${produkid} Diamond ( Mlbb )_\n_》Trx Id : ${response.data.data.trx_id}_\n\n_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala Pada Game Anda._\n\nNote: Jika Ada Kesalahan Id Atau NickName Bukan Tanggung Jawab Owner!.`
+let workd = `*── 「 TOPUP GAGAL 」 ──*
+
+Transaksi Anda Gagal, Saldo Sistem Belum terisi Saldo User Anda Tidak Akan Dipotong, Harap Tumggu Saldo Sistem Reset Setiap 6 Jam Sekali!.`
+if(response.data.data.status == "Sukses"){
+if (idharga == "UPMBL5"){
+moneyAdd(m.sender, 1700)
+reply(workid)
+}
+if (idharga == "UPMBL12"){
+moneyAdd(m.sender, 4000)
+reply(workid)
+}
+if (idharga == "ZIDMBL17"){
+moneyAdd(m.sender, 4500)
+reply(workid)
+}
+if (idharga == "UPMBL19"){
+moneyAdd(m.sender, 7000)
+reply(workid)
+}
+if (idharga == "UPMBL28"){
+moneyAdd(m.sender, 10500)
+reply(workid)
+}
+if (idharga == "UPMBL36"){
+moneyAdd(m.sender, 13000)
+reply(workid)
+}
+if (idharga == "UPMBL44"){
+moneyAdd(m.sender, 15000)
+reply(workid)
+}
+if (idharga == "UPMBL59"){
+moneyAdd(m.sender, 18500)
+reply(workid)
+}
+if (idharga == "UPMBL74"){
+moneyAdd(m.sender, 22500)
+reply(workid)
+}
+if (idharga == "UPMBL85"){
+moneyAdd(m.sender, 26500)
+reply(workid)
+}
+if (idharga == "UPMBL170"){
+moneyAdd(m.sender, 51500)
+reply(workid)
+}
+if (idharga == "UPMBL185"){
+moneyAdd(m.sender, 56500)
+reply(workid)
+}
+if (idharga == "UPMBL222"){
+moneyAdd(m.sender, 67500)
+reply(workid)
+}
+if (idharga == "UPMBL240"){
+moneyAdd(m.sender, 72500)
+reply(workid)
+}
+if (idharga == "UPMBL296"){
+moneyAdd(m.sender, 89500)
+reply(workid)
+}
+if (idharga == "UPMBL370"){
+moneyAdd(m.sender, 111500)
+reply(workid)
+}
+if (idharga == "UPMBL408"){
+moneyAdd(m.sender, 123500)
+reply(workid)
+}
+if (idharga == "UPMBL568"){
+moneyAdd(m.sender, 167500)
+reply(workid)
+}
+if (idharga == "UPMBL875"){
+moneyAdd(m.sender, 256500)
+reply(workid)
+}
+if (idharga == "UPMBL1159"){
+moneyAdd(m.sender, 333500)
+reply(workid)
+}
+if (idharga == "UPMBL2010"){
+moneyAdd(m.sender, 555.500)
+reply(workid)
+}
+if (idharga == "UPMBL4830"){
+moneyAdd(m.sender, 1322500)
+reply(workid)
+}
+} else if(response.data.data.status == "Gagal"){
+reply(workd)
+}
+})
+break
+}
+case 'topupml2':{
+if (m.isGroup) return m.reply('Fitur Ini Hanya Bisa Digunakan Di Private Chat!')
+let idml1 = text.split("|")[0]
+let idml2 = text.split("|")[1]
+let idml = `${idml1}${idml2}`
+let produkid = text.split("|")[2]
+if (isNaN(parseInt(produkid))) return m.reply('Jumlah Harus Berupa Angka!')
+if (isNaN(parseInt(idml1))) return m.reply('Id Harus Berupa Angka!')
+if (isNaN(parseInt(idml2))) return m.reply('Server Harus Berupa Angka!')
+let idharga = `ZIDMBL${produkid}`
+if (idharga == "ZIDMBL17"){
+global.hargadmml = 4500
+}
+if (idharga == "ZIDMBL34"){
+global.hargadmml = 9000
+}
+if (idharga == "ZIDMBL50"){
+global.hargadmml = 13500
+}
+if (idharga == "ZIDMBL66"){
+global.hargadmml = 18000
+}
+if (idharga == "ZIDMBL74"){
+global.hargadmml = 20000
+}
+if (idharga == "ZIDMBL83"){
+global.hargadmml = 22500
+    }
+if (idharga == "ZIDMBL184"){
+global.hargadmml = 50000
+    }
+if (idharga == "ZIDMBL366"){
+global.hargadmml = 100000
+    }
+if (idharga == "ZIDMBL758"){
+global.hargadmml = 200000
+    }
+var axios = require('axios');
+var config = {
+  method: 'get',
+  url: `https://v1.apigames.id/merchant/${global.merchant}/cek-username/mobilelegend?user_id=${idml}&signature=${global.signature}`,
+  headers: { }
+};
+
+axios(config)
+.then(function (response) {
+let buttons = [
+{ buttonId: prefix+`topupml2yes ${idml1}|${idml2}|${produkid}`, buttonText: { displayText: 'Lanjutkan' }, type: 1 },
+]
+if (response.data.error_msg) {
+m.reply('Invalid Id Or Zone')
+}else if (response.data.message) {
+liaacans.sendButtonText(m.chat, buttons, `*── 「 CHECK ID OTOMATIS 」 ──*
+
+_Silahkan Cek Data Berikut Ini:_
+_》Id Game : ${idml1} (${idml2})_
+_》NickName : ${response.data.data.username}_
+_》Nama Item : ${produkid} Diamond ( Mlbb )_
+
+Jika Data Sudah Benar Silahkan Klik Lanjutkan Dan Jika Data Salah Silahkan Mengetik Ulang Transaksi Anda!.`, liaacans.user.name, m)
+} 
+})
+.catch(function (error) {
+  m.reply(error);
+});
+}
+break
+case 'topupml2yes':{
+if (m.isGroup) return m.reply('Fitur Ini Hanya Bisa Digunakan Di Private Chat!')
+let idml1 = text.split("|")[0]
+let idml2 = text.split("|")[1]
+let idml =`${idml1}${idml2}`
+let produkid = `${text.split("|")[2]}`
+let refdi = randomNomor(001, 1000)
+let refid = `${refdi}`
+let idharga = `ZIDMBL${produkid}`
+var axios = require('axios');
+var config = {
+  method: 'get',
+  url: `https://v1.apigames.id/transaksi/http-get-v1?merchant=${global.merchant}&secret=${global.secret}&produk=${produkid}&tujuan=${idml}&ref=TRX${refid}`,
+  headers: { }
+};
+
+axios(config)
+.then(function (response) {
+if (idharga == "ZIDMBL17"){
+global.hargadmml = 4500
+}
+if (idharga == "ZIDMBL34"){
+global.hargadmml = 9000
+}
+if (idharga == "ZIDMBL50"){
+global.hargadmml = 13500
+}
+if (idharga == "ZIDMBL66"){
+global.hargadmml = 18000
+}
+if (idharga == "ZIDMBL74"){
+global.hargadmml = 20000
+}
+if (idharga == "ZIDMBL83"){
+global.hargadmml = 22500
+    }
+if (idharga == "ZIDMBL184"){
+global.hargadmml = 50000
+    }
+if (idharga == "ZIDMBL366"){
+global.hargadmml = 100000
+    }
+if (idharga == "ZIDMBL758"){
+global.hargadmml = 200000
+    }
+let workid = `*── 「 TOPUP SUKSES 」 ──*\n\n_》Harga : Rp${global.hargadmml}_\n_》NickName : ${response.data.data.sn}_\n_》Nama Item : ${produkid} Diamond ( Mlbb )_\n_》Trx Id : ${response.data.data.trx_id}_\n\n_Item Akan Segera Masuk Secara Otomatis Silahkan Melakukan Pengecekan Secara Berkala Pada Game Anda._\n\nNote: Jika Ada Kesalahan Id Atau NickName Bukan Tanggung Jawab Owner!.`
+let workd = `*── 「 TOPUP GAGAL 」 ──*
+
+Transaksi Anda Gagal, Saldo Sistem Belum terisi Saldo User Anda Tidak Akan Dipotong, Harap Tumggu Saldo Sistem Reset Setiap 6 Jam Sekali!.`
+if(response.data.data.status == "Sukses"){
+if (idharga == "ZIDMBL17"){
+moneyAdd(m.sender, 4500)
+m.reply(workid)
+}
+if (idharga == "ZIDMBL34"){
+moneyAdd(m.sender, 9000)
+m.reply(workid)
+}
+if (idharga == "ZIDMBL50"){
+moneyAdd(m.sender, 13500)
+m.reply(workid)
+}
+if (idharga == "ZIDMBL66"){
+moneyAdd(m.sender, 18000)
+m.reply(workid)
+}
+if (idharga == "ZIDMBL74"){
+moneyAdd(m.sender, 20000)
+m.reply(workid)
+}
+if (idharga == "ZIDMBL83"){
+moneyAdd(m.sender, 22500)
+m.reply(workid)
+}
+if (idharga == "ZIDMBL184"){
+moneyAdd(m.sender, 50000)
+m.reply(workid)
+}
+if (idharga == "ZIDMBL366"){
+moneyAdd(m.sender, 100000)
+m.reply(workid)
+}
+if (idharga == "ZIDMBL758"){
+moneyAdd(m.sender, 200000)
+m.reply(workid)
+}
+} else if(response.data.data.status == "Gagal"){
+m.reply(workd)
+}
+})
+break
+}
+case 'listdmff2':
+let topupp = `*── 「 DIAMOND FREE FIRE 」 ──*
+
+_》5 Diamond : Rp1.261_
+_》12 Diamond : Rp2.523_
+_》70 Diamond : Rp12.614_
+_》140 Diamond : Rp25.227_
+_》355 Diamond : Rp63.068_
+_》720 Diamond : Rp126.136_
+_》1450 Diamond : Rp252.273_
+
+Cara Pembelian:
+${prefix}topupff2 ID|JUMLAH DIAMOND
+Contoh:
+${prefix}topupff2 123456789|1450
+
+NOTE: Pembelian Akan Diproses Oleh Sistem Otomatis Ketika Anda Telah Melakukan Pembayaran Dan Diamond Akan Segera Masuk.
+`
+m.reply(topupp)
+break
+case 'topupff2':{
+let idff = text.split("|")[0]
+let totaldm = text.split("|")[1]
+let nopemu = m.sender.replace("@s.whatsapp.net", "")
+var baseURL = "https://duniagames.co.id";
+var axios = require('axios');
+axios.get(`https://api.lolhuman.xyz/api/freefire/${idff}?apikey=Imanmpa`)
+            .then(({data}) => {
+m.reply('Tunggu Sebentar Kak, ImanBot Akan Cek Id Kakak')
+            })
+            .catch((err) => {
+                m.reply('Id Atau NickName Tidak Ditemukan!')
+            })
+const topup = async(userId, zoneId, diamond, phone, game) => {
+  if (!userId || !diamond || !phone || !game) return new Error();
+  let cookie = await getCookie(baseURL);
+  if (!cookie) return new Error("empty cookies");
+  let res = await axios.post(`https://api.duniagames.co.id/api/transaction/v1/top-up/inquiry/store?${getVal(diamond, game.toUpperCase())}&gameId=${userId}&product_ref=REG&product_ref_denom=AE`, null, {
+    "headers": { 
+      "cookie": cookie.join(" "),
+      "origin": baseURL,
+      "referer": baseURL
+    }
+  })
+  if (res.status != 200) throw new Error(res.statusText);
+  let res2 = await axios.post(`https://api.duniagames.co.id/api/transaction/v1/top-up/transaction/store?inquiryId=${res.data.data.inquiryId}&phoneNumber=${phone}&transactionId=${res.data.data.transactionId}`, null, {
+    "headers": { 
+      "cookie": cookie.join(" "),
+      "origin": baseURL,
+      "referer": baseURL
+    }
+  })
+if (res2.status != 200) throw new Error(res2.statusText);
+let suksess = `*── 「 TOPUP OTOMATIS 」 ──*
+                
+_Silahkan Scan Qris Dan Transfer Sesuai Harga:_
+_》Harga : Rp${res2.data.data.totalPrice}_
+_》NickName : ${res2.data.data.userGameName}_
+_》Nama Item : ${res.data.data.item.name} ( FreeFire )_
+_》Code Trx : ${res2.data.data.transactionCode}_
+
+_Qr Scan Berlaku 5 Menit, Setelah 5 Menit Pesan Ini Akan Dihapus!._  
+
+_Note: Diamond Akan Otomatis Masuk Dalam 2-3 Menit Setelah Pembayaran Berhasil._`
+let kirimk = await liaacans.sendMessage(m.chat, { image: { url: res2.data.data.elisaConfig.qrCode }, caption: `${suksess}` }, { quoted: m })
+setTimeout(() => {
+liaacans.sendMessage(m.chat, { delete:kirimk.key })
+}, 500000)
+}
+const getCookie = async(...args) => (await axios(...args)).headers["set-cookie"];
+function getVal(dm, game) {
+  let list = JSON.parse(fs.readFileSync("./json/duniagames.json"))
+  if (!list[game]) return new Error("no game for '" + game + "'")
+  return new URLSearchParams(list[game][dm]).toString();
+}
+let shop = await topup(`${idff}`, null, `${totaldm}`, `${nopemu}`, "freefire")
+break
+}
+case 'rules':
+             rulesBot = `
+
+ # RULES BOT
+
+1. Jangan spam bot. 
+Sanksi: *WARN/SOFT BLOCK*
+
+2. Jangan telepon bot.
+Sanksi: *SOFT BLOCK*
+
+3. Jangan mengejek bot.
+Sanksi: *PERMANENT BLOCK*
+
+4. Gpp sc gw jelek yg penting 
+Bot gw jalan awokawoak
+Jika sudah dipahami rules-nya, silakan ketik *#menu* untuk memulai!
+
+Owner  BOTZ:
+wa.me/6285821676621
+`
+             m.reply(rulesBot)
+             break
+case 'order':
+			case 'caraorder': {
+				if (m.isGroup) return m.reply('Fitur Tidak Dapat Digunakan Untuk Group!')
+				let capp = `*Hallo _${m.pushName}_ Berikut Cara Order*\n\n*Followers :*\nex1 : _${prefix}followers jumlah|target [ tanpa (@) ]_\nex2 : _${prefix}followers 500|auliarahman_ckep___\n\n*View :*\nex 1 : _${prefix}view jumlah|link_\nex 2 : _${prefix}view 10000|https://vm.tiktok.com/xxxxxxx_\n\n*Like :*\nex 1 : _${prefix}like jumlah|link_\nex 2 : _${prefix}like 10000|https://www.instagram.com/p/xxxxxxx_\n\nSekian penjelasan cara order\nSemoga anda faham dengan penjelasan ini🙏\nbeli = faham`
+				liaacans.sendMessage(m.chat, {text: capp}, {quoted:m})
+				}
+				break
+          /*case 'followers': case 'follower': { // Fix Aja Kalau Bisa
+				if (m.isGroup) return m.reply('Fitur Tidak Dapat Digunakan Untuk Group!')
+				if (args.length < 1) return m.reply(`Link atau Usernamenya mana?`)
+				let juma = q.split('|')[0] ? q.split('|')[0]: q
+				let targtt = q.split('|')[1] ? q.split('|')[1]: ''
+				if (targtt.length < 1) return m.reply(`Jumlah dan Target harus di isi!\nContoh: ${prefix}${command.slice(1)} 500|auliarahman_ckep`)
+
+				let fetaa = await fetchJson(`https://ampibismm.my.id/api/json?bot=true&api_key=aryamanik&action=pricelist&type=follower`)
+				list = []
+				textplus = `${juma}|${targtt}`
+            for (let L of fetaa.data) {
+                list.push({
+                        title: `*${L.nama}*`,
+    					rowId: `${prefix}confirmorderkunci ${textplus}|${L.id_layanan}`,
+    					description: `\n${L.desc}`
+                    })
+                }
+const listMessage = {
+  text: `Pilih layanan sesuai dengan yang anda inginkan!\nBerikut adalah list yang bisa anda pilih, silahkan!.`,
+  footer: "© Created By LiaaCans BOT",
+  buttonText: "Click Here!",
+  sections: [{
+                    title: "Sosmed Store",
+  				rows: list
+                }],
+                listType: 1
+}
+
+const sendMsg = await liaacans.sendMessage(m.chat, listMessage)
+               break
+					}
+					
+			case 'like':{ // Fix Aja Klau Bisa
+				if (m.isGroup) return m.reply('Fitur Tidak Dapat Digunakan Untuk Group!')
+				if (args.length < 1) return m.reply(`Link atau Usernamenya mana?`)
+				let jumlahhh = q.split('|')[0] ? q.split('|')[0]: q
+				let targettt = q.split('|')[1] ? q.split('|')[1]: ''
+				if (targettt.length < 1) return m.reply(`Jumlah dan Target harus di isi!\nContoh: ${prefix}${command.slice(1)} 500|auliarahman_ckep`)
+
+				fetaa = await fetchJson(`https://ampibismm.my.id/api/json?bot=true&api_key=aryamanik&action=pricelist&type=like`)
+				list = []
+				textplus = `${jumlahhh}|${targettt}`
+            for (let L of fetaa.data) {
+                list.push({
+                        title: `*${L.nama}*`,
+    					rowId: `${prefix}confirmorderkunci ${textplus}|${L.id_layanan}`,
+    					description: `\n${L.desc}`
+                    })
+                }
+const listMessage = {
+  text: `Pilih layanan sesuai dengan yang anda inginkan!\nBerikut adalah list yang bisa anda pilih, silahkan!.`,
+  footer: "© Created By LiaaCans BOT",
+  buttonText: "Click Here!",
+  sections: [{
+                    title: "Sosmed Store",
+  				rows: list
+                }],
+                listType: 1
+}
+
+const sendMsg = await liaacans.sendMessage(m.chat, listMessage)
+				}
+				break
+case 'view': { // Fix Aja Kalau Bisa
+				if (m.isGroup) return m.reply('Fitur Tidak Dapat Digunakan Untuk Group!')
+				if (args.length < 1) return m.reply(`Link atau Usernamenya mana?`)
+				let jumlahh = q.split('|')[0] ? q.split('|')[0]: q
+				let targett = q.split('|')[1] ? q.split('|')[1]: ''
+				if (targett.length < 1) return m.reply(`Jumlah dan Target harus di isi!\nContoh: ${prefix}${command.slice(1)} 500|auliarahman_ckep`)
+
+				let anu = await fetchJson(`https://ampibismm.my.id/api/json?bot=true&api_key=aryamanik&action=pricelist&type=view`)
+				list = []
+				textplus = `${jumlahh}|${targett}`
+            for (let L of anu.results) {
+                list.push({
+                        title: `*${L.nama}*`,
+    					rowId: `${prefix}confirmorderkunci ${textplus}|${L.id_layanan}`,
+    					description: `\n${L.desc}`
+                    })
+                }
+const listMessage = {
+  text: `Pilih layanan sesuai dengan yang anda inginkan!\nBerikut adalah list yang bisa anda pilih, silahkan!.`,
+  footer: "© Created By LiaaCans BOT",
+  buttonText: "Click Here!",
+  sections: [{
+                    title: "Sosmed Store",
+  				rows: list
+                }],
+                listType: 1
+}
+
+const sendMsg = await liaacans.sendMessage(m.chat, listMessage)
+				break
+}
+case 'confirmorderkunci': { //KUNCI = BIAR GA DIAKSES HEHE
+				if (m.isGroup) return m.reply('Fitur Tidak Dapat Digunakan Untuk Group!')
+				if (args.length < 1) return m.reply(`*Cara order followers*\n\n*Example :* _${command} jumlah|username tanpa (@)_\n*Example :* _${command} 500|auliarahman_ckep\n\n*Min pesan :* _300_ \n*Max pesan :* _500k_\n\nThank You`)
+				let jumlah = q.split('|')[0] ? q.split('|')[0]: q
+				let targ = q.split('|')[1] ? q.split('|')[1]: ''
+				let idny = q.split('|')[2] ? q.split('|')[2]: ''
+
+				feta = await fetchJson(`https://ampibismm.my.id/api/json?bot=true&api_key=aryamanik&action=order&quantity=${jumlah}&target=${targ}&id_layanan=${idny}`)
+				if (feta.status == false) {
+  				m.reply(`*Maaf orderan gagal di buat*\n\nPermasalahan :\n${feta.data.msg} atau Cara order anda salah\n\nDiharapkan sudah faham jika ingin membeli\njika masih tidak faham silahkan ketik ${prefix}owner!\n`)
+				} else {
+  				let idpes = feta.data.order_id
+  				let cap = `Hay *${pushname} 👋,* Terimakasih Telah Order di Sosmed Shop!\nScan QR diatas untuk membayar! MENGGUNAKAN QRIS.\n\n*Id Pesanan Anda :* ${feta.data.order_id}\n*Target :* ${targ}\n*Jumlah Pesanan :* ${jumlah}\n*Total Harga Pesanan :* Rp ${feta.data.amount}\n*Status Orderan :* ${feta.data.status}\n\n_Info lebih lanjut klik button dibawah._`
+  				buto = [{
+    				buttonId: `cekstatus ${feta.data.order_id}`,
+    				buttonText: {
+      				displayText: 'Check Status'
+    				},
+    				type: 1
+  				}]
+  				liaacans.sendMessage(m.chat, {
+    				caption: cap, image: {
+      				url: feta.data.qris
+    				}, buttons: buto, footer: `©Created LiaaCans BOT`
+  				})
+				}
+				console.log(feta)
+				}
+				break
+case 'listharga':
+			case 'prichlist':
+			case 'pricelist': {
+				feta = await fetchJson(`https://ampibismm.my.id/api/json?bot=true&api_key=aryamanik&action=pricelist&type=semua`)
+				list = '*List Harga Layanan*\n\n'
+				for (let L of anu.results) {
+ 				 list += `name : ${L.nama}\ndesc : ${L.desc}\nmin : ${L.min}\nmax : ${L.max}\nharga : ${L.price}\nid : ${L.id_layanan}\n\n`
+				}
+				liaacans.sendMessage(m.chat, {text: list}, {quoted:m})
+				console.log(feta)
+				}
+				break*/
+case 'chekstatus':
+			case 'cekstatus': {
+				if (m.isGroup) return m.reply('Fitur Tidak Dapat Digunakan Untuk Group!')
+				if (args.length < 1) return m.reply('idnya mana bang')
+				seta = await fetchJson(`https://ampibismm.my.id/api/json?bot=true&api_key=aryamanik&action=status&order_id=${q}`)
+				//console.log(seta)
+				if (seta.status == false) {
+  				var captionnye = `\nid order tidak di temukan`
+				} else {
+  				var captionnye = `\n*Status Orderan Anda*\n\nTarget : ${seta.data.target}\nStatus : ${seta.data.status}\nFollowers Default : ${seta.data.start_count}\nOn Process : ${seta.data.kurang}\nTotal Order : ${seta.data.total_order}\nTanggal Pesan : ${seta.data.tanggal_pesan}\nJumlah Pembayaran : ${seta.data.amount}\nId Pesanan : ${seta.data.order_id}\n\nTerimakasih sudah membeli followers dari kami, ditunggu next ordernya!`
+				}
+				var copynye = `${q}`
+				const menuButa = [{
+  				index: 1,
+  				urlButton: {
+    				displayText: `Copy Id Here`,
+    				url: 'https://www.whatsapp.com/otp/copy/'+copynye
+  				}},
+				{urlButton: {
+    				displayText: `Panel Smm`,
+    				url: 'https://ampibismm.my.id'
+  				}},
+  				{
+    				quickReplyButton: {
+      				displayText: `Check Status Again`,
+      			id: `cekstatus ${q}`
+    				}
+  				},
+				]
+				await liaacans.sendMessage(m.chat, {
+  				text: `${captionnye}`, templateButtons: menuButa, footer: `Copy id pesanan anda dibawah ini\n\nampibismm.my.id\n©LiaaCansBot`
+				}, {
+  				quoted: m
+				})
+				}
+				break
+case 'createcp': // FIX AJA KLAU BISA
+if (!isCreator) throw mess.owner
+if (!q) return m.reply(`*CREATECP ACCOUNT*\nExample:\n#${command} domain|package\n\nContoh:\n#${command} liaacansapi.com|liaacans`)
+let usern = `USER${makeid(6)}`
+let domain = q.split('|')[0] 
+let pekeg = q.split('|')[1]
+if (!domain) return m.reply('Domain wajib di isi!!')
+if (!pekeg) return m.reply('Package Wajib di isi!!')
+m.reply('Creating please wait... ⏳')
+fetchJson(`https://${hostwhm}:2087/json-api/createacct?api.version=1&username=${usern}&contactemail=auliahostweb@gmail.com&plan=${pekeg}&domain=${domain}`, authWhm).then(response => {     
+let np = response.data
+if (np.metadata.result == 0) {
+m.reply(np.metadata.reason)
+} else {
+let dsta = np.metadata.output.raw;
+var substr = dsta.substring(
+dsta.toString().indexOf("+===================================+")
+);
+let xxybot = substr.split("| Language: en")[0];
+m.reply(`${xxybot}\n\nLogin : https://${hostwhm}:2087`)
+}});
+break
+case 'listcp': // FIX AJA KALAU BISA
+if (!isCreator) throw mess.owner
+m.reply('Wait Getting List Account info....')
+fetchJson(`https://${hostwhm}:2087/json-api/listaccts?api.version=1`, authWhm)
+.then((risol) => {
+let lisol = risol.data
+var ttdy = lisol.data.acct
+let ogh = `*── 「 LIST CPANEL 」 ──*\nTotal Akun : ${ttdy.length}\n`
+for (let i = 0; i < ttdy.length; i++) {
+ogh += `
+\n
+─────[\`\`\` ${ttdy[i].user} \`\`\` ]────────
+*▢ Maxsub* : ${ttdy[i].maxsub}
+*▢ Maxsql* : ${ttdy[i].maxsql}
+*▢ Startdate* : ${ttdy[i].startdate}
+*▢ Disklimit* : ${ttdy[i].disklimit}
+*▢ Maxlst* : ${ttdy[i].maxlst}
+*▢ Plan* : ${ttdy[i].plan}
+*▢ Owner*: ${ttdy[i].owner}
+*▢ IP* : ${ttdy[i].ip}
+*▢ Domain* : ${ttdy[i].domain}
+*▢ Diskused* : ${ttdy[i].diskused}
+*▢ Maxaddons* : ${ttdy[i].maxaddons}
+*▢ Suspendreason* : ${ttdy[i].suspendreason}
+─────────────────\n\n`
+}
+m.reply(ogh)
+})
+break
+case 'terminate': // FIX AJA KLAU BISA
+if (!isCreator) throw mess.owner
+if (args.length < 2) return reply(`Kirim perintah #${command} username`)
+m.reply('Wait Terminating Account....')
+fetchJson(`https://${hostwhm}:2087/json-api/removeacct?api.version=1&username=${args[1]}`, authWhm )
+.then((e) => {
+if ([1, "1"].includes(e.data?.metadata?.result))
+m.reply(`Done User ${q} Telah di Terminate`);
+else {
+m.reply(e.metadata);
+console.log(e.data);
+}
+})
+break
+//------------------< Premium >-------------------
+      /* case 'premium':  // Fix Aja Klau Bisaa
+       addCountCmd(`#${command.slice(1)}`, m.sender, _cmd) 
+              if (!isCreator || m.key.fromMe) throw mess.owner
+              if (args[1] === 'add') {
+              if (m.message.extendedTextMessage != undefined) {
+              mentioned = m.message.extendedTextMessage.contextInfo.mentionedJid
+              premium.addPremiumUser(mentioned[0], args[3], _premium)
+              m.reply(`*「 PREMIUM ADDED 」*\n\n➸ *ID*: ${mentioned[0]}\n➸ *Expired*: ${ms(toMs(args[3])).days} day(s) ${ms(toMs(args[3])).hours} hour(s) ${ms(toMs(args[3])).minutes} minute(s)`)
+        
+              } else {
+            
+              premium.addPremiumUser(args[1] + '@s.whatsapp.net', args[3], _premium)
+              m.reply(`*「 PREMIUM ADDED 」*\n\n➸ *ID*: ${args[1]}@s.whatsapp.net\n➸ *Expired*: ${ms(toMs(args[3])).days} day(s) ${ms(toMs(args[3])).hours} hour(s) ${ms(toMs(args[3])).minutes} minute(s)`)
+}
+              } else if (args[1] === 'del') {
+              if (m.message.extendedTextMessage != undefined) {
+              mentioned = m.message.extendedTextMessage.contextInfo.mentionedJid
+            _premium.splice(premium.getPremiumPosition(mentioned[0], _premium), 1)
+              fs.writeFileSync('./json/premium.json', JSON.stringify(_premium))
+              m.reply('Sukses')
+              } else {
+            _premium.splice(premium.getPremiumPosition(args[1] + '@s.whatsapp.net', _premium), 1)
+              fs.writeFileSync('./json/premium.json', JSON.stringify(_premium))
+              m.reply('Sukses')
+}
+              } else {
+              m.reply(mess.wrongFormat)
+}
+              break
+       case 'premiumcheck':
+       case 'cekpremium': 
+       addCountCmd(`#${command.slice(1)}`, sender, _cmd) 
+              if (!isPremium) return sendButMessage(m.chat, prem1, prem2, prem3, { quoted: fkontak })
+              const cekExp = ms(await premium.getPremiumExpired(m.sender, _premium) - Date.now())
+              m.reply(`*「 PREMIUM EXPIRE 」*\n\n➸ *ID*: ${sender}\n➸ *Premium left*: ${cekExp.days} day(s) ${cekExp.hours} hour(s) ${cekExp.minutes} minute(s)`)
+              break
+       case 'listprem':
+       case 'listpremium':          
+       addCountCmd(`#${command.slice(1)}`, m.sender, _cmd) 
+              let txt = `「 *PREMIUM USER LIST* 」\n\n`
+              let men = [];
+              for (let i of _premium){
+              men.push(i.id)
+              const checkExp = ms(i.expired - Date.now())
+              txt += `➸ *ID :* @${i.id.split("@")[0]}\n➸ *Expired*: ${checkExp.days} day(s) ${checkExp.hours} hour(s) ${checkExp.minutes} minute(s)\n\n`
+}
+              mentions(txt, men, true)
+              break*/
+        // Menu Store
+        case 'item':
+                    if (!m.isGroup) throw `Perintah Ini Khusus Untuk Grup`
+            if (db_respon_list.length === 0) return m.reply(`Belum ada list message di database`)
+            if (!isAlreadyResponListGroup(m.chat, db_respon_list)) return m.reply(`Belum ada list message yang terdaftar di group ini`)
+            var arr_rows = [];
+            for (let x of db_respon_list) {
+                if (x.id === m.chat) {
+                    arr_rows.push({
+                        title: x.key,
+                        rowId: x.key
+                    })
+                }
+            }
+const listMessage = {
+  text: `${pushname} 👋\nBerikut Adalah List Item\nSilahkan Pilih Salah Satu!\n🕰 Jam : ${moment().format("HH:mm:ss z")} `,
+  footer: "© Created By LiaaCans BOT",
+  buttonText: "Click Here!",
+  sections: [{
+                    title: groupName, rows: arr_rows
+                }],
+                listType: 1
+}
+
+const sendMsg = await liaacans.sendMessage(m.chat, listMessage)
+               break
+        
+        case 'additem':
+            if (!m.isGroup) throw `Perintah Ini Khusus Untuk Grup`
+            if (!isAdmins && !isCreator) return m.reply('Only Admins')
+            var args1 = text.split("@")[0]
+            var args2 = text.split("@")[1]                
+            if (!q.includes("@")) return m.reply(`Gunakan dengan cara ${command.slice(1)} *Nama Item@Item*\n\n_Contoh_\n\n${command.slice(1)} Dm Ml@List`)
+            if (isAlreadyResponList(m.chat, args1, db_respon_list)) return m.reply(`List respon dengan key : *${args1}* sudah ada di group ini.`)
+            if (/image/.test(mime)) {
+              let media = await liaacans.downloadAndSaveMediaMessage(m.message.imageMessage || m.message.extendedTextMessage?.contextInfo.quotedMessage.imageMessage, 'image')
+                const fd = new FormData();
+                fd.append('file', fs.readFileSync(media), '.tmp', '.jpg')
+                fetch('https://telegra.ph/upload', {
+                    method: 'POST',
+                    body: fd
+                }).then(res => res.json())
+                    .then((json) => {
+                        addResponList(m.chat, args1, args2, true, `https://telegra.ph${json[0].src}`, db_respon_list)
+                        m.reply(`Sukses set list message dengan key : *${args1}*`)
+                        if (fs.existsSync(media)) fs.unlinkSync(media)
+                    })
+            } else {
+                addResponList(m.chat, args1, args2, false, '-', db_respon_list)
+                m.reply(`Sukses set list message dengan key : *${args1}*`)
+            }
+            break
+        case 'delitem':
+            if (!m.isGroup) throw `Perintah Ini Khusus Group`
+            if (!isAdmins && !isCreator) return m.reply('Only Admins')
+            if (db_respon_list.length === 0) return m.reply(`Belum ada list message di database`)
+            if (!q) return m.reply(`Gunakan dengan cara ${command.slice(1)} *Nama Item*\n\n_Contoh_\n\n${command.slice(1)} Dm Ml`)
+            if (!isAlreadyResponList(m.chat, q, db_respon_list)) return reply(`List Item dengan Nama *${q}* tidak ada di database!`)
+            delResponList(m.chat, q, db_respon_list)
+            m.reply(`Sukses delete list message dengan key *${q}*`)
+            break
+        case 'changeitem': case 'change':
+            if (!m.isGroup) throw `Perintah Ini Khusus Grup`
+            if (!isAdmins && !isCreator) return m.reply('Only Admins')
+            var args1 = q.split("@")[0]
+            var args2 = q.split("@")[1]
+            if (!q.includes("@")) return m.reply(`Gunakan dengan cara ${command.slice(1)} *Nama Item@Item*\n\n_Contoh_\n\n${command.slice(1)} Dm Ml@List`)
+            if (!isAlreadyResponListGroup(m.chat, db_respon_list)) return m.reply(`Maaf, untuk key *${args1}* belum terdaftar di group ini`)
+            if (/image/.test(mime)) {
+                let media = await liaacans.downloadAndSaveMediaMessage(m.message.imageMessage || m.message.extendedTextMessage?.contextInfo.quotedMessage.imageMessage, 'image')
+              const fd = new FormData();
+                fd.append('file', fs.readFileSync(media), '.tmp', '.jpg')
+                fetch('https://telegra.ph/upload', {
+                    method: 'POST',
+                    body: fd
+                }).then(res => res.json())
+                    .then((json) => {
+                        updateResponList(m.chat, args1, args2, true, `https://telegra.ph${json[0].src}`, db_respon_list)
+                        m.reply(`Sukses update list message dengan key : *${args1}*`)
+                        if (fs.existsSync(media)) fs.unlinkSync(media)
+                    })
+            } else {
+                updateResponList(m.chat, args1, args2, false, '-', db_respon_list)
+                m.reply(`Sukses update respon list dengan key *${args1}*`)
+            }
+            break
+case 'proses':
+            if (!m.isGroup) return
+            if (!isCreator) return
+            if (!m.quoted) return m.reply('Reply Bukti Pembayaran!!')
+            if (!text) return m.reply('Masukan Catatan Pelanggan\nContoh: proses 11 Diamond Ml | Id 12345678(1234)')
+            let numb = m.sender
+            let proses = `「 *TRANSAKSI PENDING* 」\n\n\`\`\`📆 TANGGAL : ${tanggal}\n⌚ JAM     : ${jam}\n✨ STATUS  : Pending\`\`\`\n\n📝 Catatan :\n${text}\n\nPesanan @${numb.split("@")[0]} sedang di proses!`
+            mentions(proses, numb, true)
+            m.quoted.copyNForward(`6285737134572@s.whatsapp.net`, true)
+            liaacans.sendMessage(`6285737134572@s.whatsapp.net`, {text: proses })
+            break
+        case 'done':
+            if (!isCreator) return
+            if (args.length == 1) return m.reply('Masukan Nomor Pelanggan\nContoh: done 62xxx|catatan')
+            if (args.length == 2) return m.reply('Masukan Catatan Transaksi')
+            if (args[1].includes('+')) return m.reply(`Jangan menggunakan +`)
+            if (isNaN(parseInt(args[1]))) return m.reply('Harus Berupa Angka!')
+            let numbb = `${args[1]}@s.whatsapp.net`             
+            let sukses = `「 *TRANSAKSI BERHASIL* 」\n\n\`\`\`📆 TANGGAL : ${tanggal}\n⌚ JAM     : ${jam}\n✨ STATUS  : Berhasil\`\`\`\n\n📝 Catatan :\n${args[2]}\n\nTerimakasih @${numbb.split("@")[0]} Next Order ya🙏`
+            liaacans.sendMessage(`${args[1]}@s.whatsapp.net`, {text: sukses })
+            break
+case 'mediafire':
+if (!isPremium) throw mess.prem
+if (!q) return m.reply('*Contoh:*\n#mediafire https://www.mediafire.com/file/451l493otr6zca4/V4.zip/file')
+let isLinks = q.match(/(?:https?:\/{2})?(?:w{3}\.)?mediafire(?:com)?\.(?:com|be)(?:\/www\?v=|\/)([^\s&]+)/)
+if (!isLinks) return m.reply('Link yang kamu berikan tidak valid')
+reply('*Mengunduh Media...*')
+let baby1 = await mediafireDl(`${isLinks}`)
+if (baby1[0].size.split('MB')[0] >= 100) return m.reply('File Melebihi Batas '+util.format(baby1))
+let result4 = `-----[ *MEDIAFIRE DOWNLOADER* ]-----
+
+*Name* : ${baby1[0].nama}
+*Size* : ${baby1[0].size}
+*Type* : ${baby1[0].mime}
+
+_Wait Mengirim file..._
+`
+reply(result4)
+if (isGroup) return m.reply('*document udah dikirim ke chat pribadi bot.*')
+liaacans.sendMessage(m.sender, {document:{url:baby1[0].link}, fileName:baby1[0].nama, mimetype: baby1[0].mime}, {quoted:m}).catch ((err) => m.reply('Gagal saat mendownload File'))
+break
 //---------------[ AUTO RESPON ]------------------//
 
 case 'rahman':{
