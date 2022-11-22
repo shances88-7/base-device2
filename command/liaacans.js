@@ -636,6 +636,7 @@ var tebakkalimat = db.data.game.kalimat = []
 var tebaklirik = db.data.game.lirik = []
 var tebaktebakan = db.data.game.tebakan = []
 var vote = db.data.others.vote = []
+var menfes = db.data.others.menfes = []
 
 /*let _premium = JSON.parse(fs.readFileSync('./json/premium.json'))*/
 let db_respon_list = JSON.parse(fs.readFileSync('./json/list-message.json'))
@@ -699,6 +700,27 @@ antilink: false,
 antilinkig: false,
 antiwame: false,
 antiviewonce: false
+}
+
+const cekPesan = (satu, dua) => { 
+let x2 = false
+Object.keys(db_menfes).forEach((i) => {
+if (db_menfes[i].id == dua){x2 = i}})
+if (x2 !== false) {
+if (satu == "id"){ return db_menfes[x2].id }
+if (satu == "teman"){ return db_menfes[x2].teman }
+}
+if (x2 == false) { return null } 
+}
+
+const setRoom = (satu, dua, tiga) => { 
+Object.keys(db_menfes).forEach((i) => {
+if (db_menfes[i].id == dua){
+if (satu == "±id"){ db_menfes[i].id = tiga
+fs.writeFileSync('../json/menfess.json', JSON.stringify(db_menfes))} 
+if (satu == "±teman"){ db_menfes[i].teman = tiga 
+fs.writeFileSync('../json/menfess.json', JSON.stringify(db_menfes))} 
+}})
 }
 
 
@@ -1193,6 +1215,10 @@ function randomNomor(min, max = null) {
 			return Math.floor(Math.random() * min) + 1
 		  }
 		}
+function monospace(string) {
+            return '```' + string + '```'
+        }
+		
 
 //Auto Block Nomor Luar Negeri
 if (m.sender.startsWith('212')) {
@@ -1271,6 +1297,7 @@ allmenu = `Hy Kak ${pushname}
 ├│${prefix}jodohku
 ├│${prefix}apakah
 ├│${prefix}bisakah
+├│${prefix}readmore
 ├│${prefix}kapankah
 ├│${prefix}gbtku
 ├│${prefix}menfess
@@ -1409,6 +1436,9 @@ allmenu = `Hy Kak ${pushname}
 ├│${prefix}public
 └─❖
 ┌─❖ ⌜ Main Menu ⌟
+├│${prefix}spamcall
+├│${prefix}ssweb-pc
+├│${prefix}infogempa
 ├│${prefix}topupmenu
 ├│${prefix}tts
 ├│${prefix}shopeepay
@@ -1434,9 +1464,97 @@ let buttons = [{ buttonId: 'menu', buttonText: { displayText: '️BACK MENU' }, 
             await liaacans.sendButtonText(m.chat, buttons, allmenu, creator, m, { quoted: kafloc })
             }
          break
-case 'menu': case 'help': case 'commands': {
-            let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `BOT TELAH ONLINE : ${runtime(process.uptime())}`,jpegThumbnail: global.thumb}}}
-            let jawab = `Hai Kak ${pushname}
+case 'menu': case 'help': case 'command': {
+let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
+const sections = [
+    {
+	title: `ALL MENU`,
+	rows: [
+	    {title: "ALL MENU", rowId: `${prefix}allmenu`}
+	]
+    },
+    {
+	title: `GROUP MENU`,
+	rows: [
+	    {title: "GROUP MENU", rowId: `${prefix}groupmenu`}
+	]
+    },
+    {
+	title: `FUN MENU`,
+	rows: [
+	    {title: "FUN MENU", rowId: `${prefix}funmenu`}
+	]
+    },
+    {
+	title: `ANONYMOUS MENU`,
+	rows: [
+	    {title: "ANONYMOUS NENU", rowId: `${prefix} anonymousmenu`}
+	]
+    },
+    {
+	title: `CONVERT MENU`,
+	rows: [
+	    {title: "CONVERT MENU", rowId: `${prefix}convertmenu`}
+	]
+    },
+    {
+	title: `BUG MENU [ KHUSUS OWNER ]`,
+	rows: [
+	    {title: "BUG MENU", rowId: `${prefix}bugmenu`}
+	]
+    },
+    {
+	title: `RANDOM MENU`,
+	rows: [
+	    {title: "RANDOM MENU", rowId: `${prefix}randommenu`}
+	]
+    },
+    {
+	title: `DOWNLOAD MENU [ KHUSUS PREM ]`,
+	rows: [
+	    {title: "DOWNLOAD MENU", rowId: `${prefix}downloadmenu`}
+	]
+	},
+	{
+	title: `OWNER MENU [ KHUSUS OWN ]`,
+	rows: [
+	    {title: "OWNER MENU", rowId: `${prefix}ownermenu`}
+	]
+    },
+    {
+	title: `DATABASE MENU`,
+	rows: [
+	    {title: "DATABASE MENU", rowId: `${prefix}databasemenu`}
+	]
+    },
+    {
+	title: `ISLAMIC MENU`,
+	rows: [
+	    {title: "ISLAMIC MENU", rowId: `${prefix}islamicmenu`}
+	]
+	},
+	{
+	title: `CHARGER MENU`,
+	rows: [
+	    {title: "CHARGER MENU", rowId: `${prefix}chargermenu`}
+	]
+	},
+	{
+	title: `MAKER MENU`,
+	rows: [
+	    {title: "MAKER MENU", rowId: `${prefix}makermenu`}
+	]
+	},
+	{
+	title: `MAIN MENU`,
+	rows: [
+	    {title: "MAIN MENU", rowId: `${prefix}mainmenu`}
+	]
+    },
+]
+let menunyaa = `Menampilkan List Menu LiaaCans Bot
+
+Hai Kak ${pushname}
 *${ucapanWaktu}*
 ┌─❖ ⌜ 𝙄𝙉𝙁𝙊 𝙐𝙎𝙀𝙍 ⌟
 ├ *Nama* : ${pushname}
@@ -1453,26 +1571,18 @@ case 'menu': case 'help': case 'commands': {
 ├ *Wit* : ${timur} WIT
 └─❖
 
-┌─❖ [ List Menu ] ❖
-├│${prefix}allmenu
-├│${prefix}groupmenu
-├│${prefix}funmenu
-├│${prefix}anonymousmenu
-├│${prefix}convertmenu
-├│${prefix}bugmenu [khusus owner]
-├│${prefix}randommenu
-├│${prefix}downloadmenu
-├│${prefix}ownermenu
-├│${prefix}databasemenu
-├│${prefix}islamicmenu
-├│${prefix}chargermenu
-├│${prefix}makermenu
-├│${prefix}mainmenu
-└─❖`
-            let buttons = [{ buttonId: 'allmenu', buttonText: { displayText: 'ALL MENU' }, type: 1 },{ buttonId: 'rules', buttonText: { displayText: 'RULES BOT' }, type: 1 },{ buttonId: 'donasi', buttonText: { displayText: 'DONASI' }, type: 1 }]
-            await liaacans.sendButtonText(m.chat, buttons, jawab, footer, m, { quoted: kafloc })
-            }
-            break
+Note : Jangan Spam Bot Dan
+Call, Jika Tidak Ingin Di Block Bot`
+const listMessage = {
+  text: menunyaa,
+  footer: "© Created By LiaaCans BOT",
+  title: "━━━[ LIST LIAACANS MENU ]━━━",
+  buttonText: "Klik Disini",
+  sections
+}
+const tessgh = await liaacans.sendMessage(m.chat, listMessage, { quoted: kafloc })
+}
+break
 case 'funmenu': {
 let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 funmenu = `┌─❖ ⌜ FUN MENU ⌟
@@ -1480,6 +1590,7 @@ funmenu = `┌─❖ ⌜ FUN MENU ⌟
 ├│${prefix}jodohku
 ├│${prefix}apakah
 ├│${prefix}bisakah
+├│${prefix}readmore
 ├│${prefix}kapankah
 ├│${prefix}gbtku
 ├│${prefix}menfess
@@ -1736,6 +1847,10 @@ break
 case 'mainmenu': {
 let kafloc = {key : {participant : '0@s.whatsapp.net', ...(m.chat ? { remoteJid: `status@broadcast` } : {}) },message: {locationMessage: {name: `${global.fake}`,jpegThumbnail: global.thumb}}}
 mainmenu = `┌─❖ ⌜ Main Menu ⌟
+├│${prefix}spamcall
+├│${prefix}ssweb-pc
+├│${prefix}ssweb-hp
+├│${prefix}infogempa
 ├│${prefix}topupmenu
 ├│${prefix}tts
 ├│${prefix}shopeepay
@@ -6286,25 +6401,71 @@ case 'proses':
             let sukses = `「 *TRANSAKSI BERHASIL* 」\n\n\`\`\`📆 TANGGAL : ${tanggal}\n⌚ JAM     : ${jam}\n✨ STATUS  : Berhasil\`\`\`\n\n📝 Catatan :\n${args[2]}\n\nTerimakasih @${numbb.split("@")[0]} Next Order ya🙏`
             liaacans.sendMessage(`${args[1]}@s.whatsapp.net`, {text: sukses })
             break
-case 'mediafire':
+case 'infogempa':
+fetchJson(`https://saipulanuar.ga/api/info/gempa?apikey=jPHjZpQF`)
+.then(xg =>{
+m.reply(`*INFO GEMPA*
+
+*tanggal:* ${xg.result.tanggal}
+*jam:* ${xg.result.jam}
+*datetime:* ${xg.result.datetime}
+*coordinates:* ${xg.result.coordinates}
+*lintang:* ${xg.result.lintang}
+*bujur:* ${xg.result.bujur}
+*magnitude:* ${xg.result.magnitude}
+*kedalaman:* ${xg.result.kedalaman}
+*wilayah:* ${xg.result.wilayah}
+*potensi:* ${xg.result.potensi}
+*dirasakan:* ${xg.result.dirasakan}`)
+})
+break
+case 'ssweb-pc':
+case 'ssweb-hp':{
+if (!q) return m.reply(`Masukan parameter url\n*Contoh:*\n${prefix+command} https://google.com`)
+m.reply(mess.wait)
+let anu =`https://leyscoders-api.herokuapp.com/api/${command}?url=${q}&apikey=IkyOgiwara`
+liaacans.sendMessage(m.chat, { image: {url: anu}, caption: 'Done!'}, {quoted:m})
+}
+break
+case 'sewabot':
+m.reply(`*SEWA LIAACANS BOT*
+
+*List Harga*
+Rp3.000 › 5day
+Rp5.000 › 10day
+Rp7.000 › 15day
+Rp10.000 › 20day
+Rp15.000 › 30day
+Rp30.000 › Permanen
+
+*day › hari*
+
+*Keuntungan Sewabot*
+- _Bisa Add Bot 1 Group_
+- _Bisa Gunain Fitur Admin_
+
+*Minat Sewabot?*
+*Hubungi Owner*
+Ketik #owner`)
+break
+case 'spamcall':{
 if (!isPremium) throw mess.prem
-if (!q) return m.reply('*Contoh:*\n#mediafire https://www.mediafire.com/file/451l493otr6zca4/V4.zip/file')
-let isLinks = q.match(/(?:https?:\/{2})?(?:w{3}\.)?mediafire(?:com)?\.(?:com|be)(?:\/www\?v=|\/)([^\s&]+)/)
-if (!isLinks) return m.reply('Link yang kamu berikan tidak valid')
-reply('*Mengunduh Media...*')
-let baby1 = await mediafireDl(`${isLinks}`)
-if (baby1[0].size.split('MB')[0] >= 100) return m.reply('File Melebihi Batas '+util.format(baby1))
-let result4 = `-----[ *MEDIAFIRE DOWNLOADER* ]-----
-
-*Name* : ${baby1[0].nama}
-*Size* : ${baby1[0].size}
-*Type* : ${baby1[0].mime}
-
-_Wait Mengirim file..._
-`
-reply(result4)
-if (isGroup) return m.reply('*document udah dikirim ke chat pribadi bot.*')
-liaacans.sendMessage(m.sender, {document:{url:baby1[0].link}, fileName:baby1[0].nama, mimetype: baby1[0].mime}, {quoted:m}).catch ((err) => m.reply('Gagal saat mendownload File'))
+if (!q) return m.reply(`Kirim perintah\n#${command} nomor\n\nContoh? #${command} 8xxxx\nNomor awal dari 8 bukan 62/08`)
+var data = await fetchJson(`https://arugaz.herokuapp.com/api/spamcall?no=${q}`).catch(() => m.reply(mess.error.api))
+if (data.status == false) {
+m.reply(data.msg)
+} else {
+m.reply(data.logs)
+}
+}
+break
+case 'readmore': case 'more':
+const more = String.fromCharCode(8206)
+const readmore = more.repeat(4001)
+ if (!q.includes('|')) return  m.reply("Penggunaan teks| teks")
+const text1 = q.substring(0, q.indexOf('|') - 0)
+const text2 = q.substring(q.lastIndexOf('|') + 1)
+m.reply( text1 + readmore + text2)
 break
 //---------------[ AUTO RESPON ]------------------//
 
